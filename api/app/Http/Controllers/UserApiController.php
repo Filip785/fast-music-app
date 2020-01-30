@@ -12,16 +12,20 @@ class UserApiController extends Controller
 {
     public function create(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users|email',
+            'password' => 'required|min:6'
+        ]);
+
         // add validation
        $data = $request->all();
 
-       $userData = [
-           'username' => $data['username'],
+       $user = new User([
+           'name' => $data['name'],
            'email' => $data['email'],
            'password' => Hash::make($data['password']),
-       ];
-
-       $user = new User($userData);
+       ]);
        $user->api_token = Str::random(60);
        $user->save();
 
@@ -32,10 +36,15 @@ class UserApiController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
         $data = $request->all();
 
-        if(!Auth::attempt(['username' => $data['username'], 'password' => $data['password']])) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if(!Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+            return response()->json(['error' => true], 401);
         }
 
         return response()->json([
