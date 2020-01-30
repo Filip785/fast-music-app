@@ -48,9 +48,8 @@ class UserApiController extends Controller
         }
 
         return response()->json([
-            'user' => Auth::user(),
-            'success' => true
-        ]);
+            'user' => Auth::user()
+        ], 200);
     }
 
     public function details()
