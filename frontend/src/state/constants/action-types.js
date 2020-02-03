@@ -1,4 +1,7 @@
 // action types will go here
 export const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
+export const ATTEMPT_LOGIN_FAILURE = 'ATTEMPT_LOGIN_FAILURE';
+export const ATTEMPT_LOGIN_FAILURE_END = 'ATTEMPT_LOGIN_FAILURE_END';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export const REGISTER_FAILURE = 'REGISTER_FAILURE';
 export const DO_LOGOUT = 'DO_LOGOUT';

@@ -3,6 +3,10 @@ import { Paper, Grid, TextField, Button, Container } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { attemptRegister } from './state/actions/index'; 
 
+const mapStateToProps = state => ({
+  errors: state.registerErrors
+});
+
 class ConnectedRegister extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +43,8 @@ class ConnectedRegister extends React.Component {
 
   render() {
     const { name, email, password } = this.state;
-
+    const { errors } = this.props;
+    console.log('errors => ', errors);
     return (
       <Container maxWidth="sm">
         <Paper className="paperPadding">
@@ -49,17 +54,17 @@ class ConnectedRegister extends React.Component {
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
-                <TextField id="name" label="Name" type="text" value={name} onChange={this.handleChangeNameEv} fullWidth autoFocus required />
+                <TextField id="name" label="Name" type="text" error={errors.name} helperText={errors.name} value={name} onChange={this.handleChangeNameEv} fullWidth autoFocus required />
               </Grid>
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
-                <TextField id="email" label="Email" type="email" value={email} onChange={this.handleChangeEmailEv} fullWidth required />
+                <TextField id="email" label="Email" type="email" error={errors.email} helperText={errors.email} value={email} onChange={this.handleChangeEmailEv} fullWidth required />
               </Grid>
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
-                <TextField id="password" label="Password" type="password" value={password} onChange={this.handleChangePasswordEv} fullWidth required />
+                <TextField id="password" label="Password" type="password" error={errors.password} helperText={errors.password} value={password} onChange={this.handleChangePasswordEv} fullWidth required />
               </Grid>
             </Grid>
             <Grid container justify="center" style={{ marginTop: '25px' }}>
@@ -72,4 +77,4 @@ class ConnectedRegister extends React.Component {
   }
 }
 
-export default connect(null, { attemptRegister }) (ConnectedRegister);
+export default connect(mapStateToProps, { attemptRegister }) (ConnectedRegister);
