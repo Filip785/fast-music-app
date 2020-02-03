@@ -2,10 +2,11 @@ import React from 'react';
 import { Paper, Grid, TextField, Button, Container } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { attemptLogin } from './state/actions/index'; 
+import Alert from '@material-ui/lab/Alert';
 
-const mapStateToProps = state => {
-  return { user: state.user };
-}
+const mapStateToProps = state => ({
+  registered: state.registered
+});
 
 class ConnectedLogin extends React.Component {
   constructor(props) {
@@ -37,6 +38,7 @@ class ConnectedLogin extends React.Component {
 
   render() {
     const { email, password } = this.state;
+    const { registered } = this.props;
 
     return (
       <Container maxWidth="sm">
@@ -59,6 +61,8 @@ class ConnectedLogin extends React.Component {
               <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleSubmitEv}>Login</Button>
             </Grid>
           </div>
+
+          {registered && <Alert severity="success" style={{marginTop: '30px'}}>Successfully registered! Now you can login</Alert>}
         </Paper>
       </Container>
     );
