@@ -24,9 +24,7 @@ class ConnectedLogin extends React.Component {
   handleSubmit() {
     const { email, password } = this.state; 
 
-    this.props.attemptLogin(email, password)
-
-    this.setState({ email: '', password: '' });
+    this.props.attemptLogin(email, password);
   }
 
   handleChangeEmail(event) {
