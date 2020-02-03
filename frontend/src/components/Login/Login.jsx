@@ -1,12 +1,12 @@
 import React from 'react';
 import { Paper, Grid, TextField, Button, Container, Snackbar } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { attemptLogin, attemptLoginFailureEnd } from './state/actions/index'; 
+import { attemptLogin, attemptLoginFailureEnd } from '../../state/actions/index'; 
 import Alert from '@material-ui/lab/Alert';
 
 const mapStateToProps = state => ({
-  registered: state.registered,
-  loginError: state.loginError,
+  registered: state.auth.registered,
+  loginError: state.auth.loginError,
 });
 
 class ConnectedLogin extends React.Component {
@@ -39,7 +39,6 @@ class ConnectedLogin extends React.Component {
   }
 
   handleClose() {
-    console.log('FIRED');
     this.props.attemptLoginFailureEnd();
   }
 

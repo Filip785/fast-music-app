@@ -1,10 +1,10 @@
 import React from 'react';
 import { Paper, Grid, TextField, Button, Container } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { attemptRegister } from './state/actions/index'; 
+import { attemptRegister } from '../../state/actions/index'; 
 
 const mapStateToProps = state => ({
-  errors: state.registerErrors
+  errors: state.auth.registerErrors
 });
 
 class ConnectedRegister extends React.Component {
@@ -44,7 +44,7 @@ class ConnectedRegister extends React.Component {
   render() {
     const { name, email, password } = this.state;
     const { errors } = this.props;
-    console.log('errors => ', errors);
+    
     return (
       <Container maxWidth="sm">
         <Paper className="paperPadding">

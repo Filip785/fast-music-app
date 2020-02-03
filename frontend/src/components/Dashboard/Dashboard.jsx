@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => ({
-  user: state.user.authUser
+  user: state.auth.user.authUser
 });
 
 class ConnectedDashboard extends React.Component {

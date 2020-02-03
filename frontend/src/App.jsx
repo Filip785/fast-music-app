@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import Login from './Login';
-import Register from './Register';
+import Login from './components/Login/Login';
+import Register from './components/Register/Register';
 import { Link, Router, Switch } from "react-router-dom";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-import Dashboard from './Dashboard';
+import Dashboard from './components/Dashboard/Dashboard';
 import history from './helpers/history';
 import PrivateRoute from './helpers/PrivateRoute';
 import { connect } from 'react-redux';
@@ -30,9 +30,9 @@ const styles = theme => ({
   }
 });
 
-function mapStateToProps(state) {
-  return { user: state.user };
-}
+const mapStateToProps = state => ({
+  auth: state.auth
+});
 
 class ConnectedApp extends React.Component {
   constructor(props) {
@@ -48,7 +48,8 @@ class ConnectedApp extends React.Component {
   }
 
   render() {
-    const { classes, user: { loggedIn } } = this.props;
+    const { classes } = this.props;
+    const { user: { loggedIn } } = this.props.auth;
 
     return (
       <Router history={history}>
