@@ -30,7 +30,7 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.authReducer
 });
 
 class ConnectedApp extends React.Component {

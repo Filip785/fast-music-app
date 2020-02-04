@@ -7,20 +7,28 @@ use Illuminate\Http\Request;
 
 class ArtistApiController extends Controller
 {
-    public function create(Request $request) {
-	    $request->validate([
-		    'artistName' => 'required|unique:artists',
-	    ]);
+	public function index()
+	{
+		return response()->json([
+			'artists' => Artist::all()
+		], 200);
+	}
 
-	    // add validation
-	    $data = $request->all();
+	public function create(Request $request)
+	{
+		$request->validate([
+			'artistName' => 'bail|required|unique:artists',
+		]);
 
-	    $artist = Artist::create([
-		    'artistName' => $data['artistName']
-	    ]);
+		// add validation
+		$data = $request->all();
 
-	    return response()->json([
-		    'artist' => $artist
-	    ], 200);
-    }
+		$artist = Artist::create([
+			'artistName' => $data['artistName']
+		]);
+
+		return response()->json([
+			'artist' => $artist
+		], 200);
+	}
 }

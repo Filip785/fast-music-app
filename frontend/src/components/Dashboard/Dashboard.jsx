@@ -8,7 +8,7 @@ import TabPanel from '../helpers/TabPanel';
 import { toggleItem } from '../../state/actions/index';
 
 const mapStateToProps = state => ({
-  musicItems: state.audio.musicItems
+  musicItems: state.audioReducer.musicItems
 });
 
 class ConnectedDashboard extends React.Component {

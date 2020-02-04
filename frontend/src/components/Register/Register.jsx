@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { attemptRegister } from '../../state/actions/index'; 
 
 const mapStateToProps = state => ({
-  errors: state.auth.registerErrors
+  errors: state.authReducer.registerErrors
 });
 
 class ConnectedRegister extends React.Component {
@@ -54,17 +54,17 @@ class ConnectedRegister extends React.Component {
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
-                <TextField id="name" label="Name" type="text" error={errors.name} helperText={errors.name} value={name} onChange={this.handleChangeNameEv} fullWidth autoFocus required />
+                <TextField id="name" label="Name" type="text" error={Boolean(errors.name)} helperText={errors.name} value={name} onChange={this.handleChangeNameEv} fullWidth autoFocus required />
               </Grid>
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
-                <TextField id="email" label="Email" type="email" error={errors.email} helperText={errors.email} value={email} onChange={this.handleChangeEmailEv} fullWidth required />
+                <TextField id="email" label="Email" type="email" error={Boolean(errors.email)} helperText={errors.email} value={email} onChange={this.handleChangeEmailEv} fullWidth required />
               </Grid>
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
-                <TextField id="password" label="Password" type="password" error={errors.password} helperText={errors.password} value={password} onChange={this.handleChangePasswordEv} fullWidth required />
+                <TextField id="password" label="Password" type="password" error={Boolean(errors.password)} helperText={errors.password} value={password} onChange={this.handleChangePasswordEv} fullWidth required />
               </Grid>
             </Grid>
             <Grid container justify="center" style={{ marginTop: '25px' }}>

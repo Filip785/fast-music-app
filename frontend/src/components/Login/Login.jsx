@@ -5,8 +5,8 @@ import { attemptLogin, attemptLoginFailureEnd } from '../../state/actions/index'
 import Alert from '@material-ui/lab/Alert';
 
 const mapStateToProps = state => ({
-  registered: state.auth.registered,
-  loginError: state.auth.loginError,
+  registered: state.authReducer.registered,
+  loginError: state.authReducer.loginError,
 });
 
 class ConnectedLogin extends React.Component {

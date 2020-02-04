@@ -22,3 +22,4 @@ Route::post('user/create', 'UserApiController@create');
 Route::post('user/login', 'UserApiController@login');
 Route::middleware('auth:api')->post('user/details', 'UserApiController@details');
 Route::middleware('auth:api')->post('artist/create', 'ArtistApiController@create');
+Route::middleware('auth:api')->get('artist', 'ArtistApiController@index');

@@ -1,10 +1,12 @@
-import { combineReducers } from "redux";
-import auth from './auth.reducer';
-import audio from './audio.reducer';
+import { combineReducers } from 'redux';
+import authReducer from './auth.reducer';
+import audioReducer from './audio.reducer';
+import artistReducer from './artist.reducer';
 
 const rootReducer = combineReducers({
-  auth,
-  audio
+  authReducer,
+  audioReducer,
+  artistReducer
 });
 
 export default rootReducer;
