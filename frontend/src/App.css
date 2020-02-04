@@ -44,3 +44,8 @@
 .paperPadding {
   padding: 40px;
 }
+.paperPaddingFileUpload {
+  
+  margin-top: 25px;
+  padding: 25px;
+}

@@ -1,13 +1,17 @@
-import React from 'react';
-import { Paper, Grid, TextField, Button, Container } from '@material-ui/core';
+import React, { Fragment } from 'react';
+import { Paper, Grid, TextField, Button, Container, Snackbar } from '@material-ui/core';
 import { connect } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { getArtists, toggleAddArtistDialog } from '../../state/actions/index';
 import AddArtistDialog from '../AddArtistDialog/AddArtistDialog';
+import PublishIcon from '@material-ui/icons/Publish';
+import Alert from '@material-ui/lab/Alert';
+import { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt } from '../../state/actions/index';
 
 const mapStateToProps = state => ({
   artists: state.artistReducer.artists,
-  user: state.authReducer.user.authUser
+  user: state.authReducer.user.authUser,
+  musicFile: state.audioReducer.musicFile,
+  fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed
 });
 
 class ConnectedAddAudioItem extends React.Component {
@@ -16,7 +20,8 @@ class ConnectedAddAudioItem extends React.Component {
 
     this.state = {
       title: '',
-      artistName: ''
+      artistName: '',
+      fileName: ''
     };
 
     this.handleAddEv = this.handleAdd.bind(this);
@@ -24,7 +29,8 @@ class ConnectedAddAudioItem extends React.Component {
     this.handleChangeArtistNameEv = this.handleChangeArtistName.bind(this);
 
     this.handleToggleDialogEv = this.handleToggleDialog.bind(this);
-
+    this.handleFileChangeEv = this.handleFileChange.bind(this);
+    this.handleCloseFileNotAllowedPromptEv = this.handleCloseFileNotAllowedPrompt.bind(this);
   }
 
   componentDidMount() {
@@ -48,9 +54,18 @@ class ConnectedAddAudioItem extends React.Component {
     this.setState({ artistName: event.target.value });
   }
 
+  handleFileChange(event) {
+    const targetFile = event.target.files[0];
+    this.props.toggleFileChange(targetFile.name, targetFile.size, targetFile.type, event.target);
+  }
+
+  handleCloseFileNotAllowedPrompt() {
+    this.props.closeFileNotAllowedPrompt();
+  }
+
   render() {
     const { title, artistName } = this.state;
-    const { artists, user } = this.props;
+    const { artists, user, musicFile, fileExtensionNotAllowed } = this.props;
 
     return (
       <Container maxWidth="sm">
@@ -78,6 +93,38 @@ class ConnectedAddAudioItem extends React.Component {
                 <Button color="primary" onClick={this.handleToggleDialogEv}>Add New Artist</Button>
               </Grid>
             </Grid>
+            <Grid container spacing={8} alignItems="flex-end">
+              <Grid container alignItems="flex-start" direction="column" item md={true} sm={true} xs={true}>
+                <Fragment>
+                  <input
+                    color="primary"
+                    type="file"
+                    id="icon-button-file"
+                    style={{ display: 'none', }}
+                    onChange={this.handleFileChangeEv}
+                  />
+                  <label htmlFor="icon-button-file">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      size="large"
+                      color="primary"
+                    >
+                      <PublishIcon />
+                      <span style={{paddingLeft: '10px'}}>Add Audio File</span>
+                    </Button>
+                  </label>
+                </Fragment>
+                {musicFile.name && <div style={{width: '100%', textAlign: 'left'}}>
+                  <Paper className="paperPaddingFileUpload">
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                      <div>{musicFile.name}</div>
+                      <div>{musicFile.size}</div>
+                    </div>
+                  </Paper>
+                </div>}
+              </Grid>
+            </Grid>
             <Grid container justify="center" style={{ marginTop: '25px' }}>
               <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleAddEv}>Add</Button>
             </Grid>
@@ -85,9 +132,14 @@ class ConnectedAddAudioItem extends React.Component {
         </Paper>
 
         <AddArtistDialog handleToggleDialogEv={this.handleToggleDialogEv} handleChangeArtistNameEv={this.handleChangeArtistNameEv} artistName={artistName} userApiToken={user.api_token} />
+        <Snackbar open={fileExtensionNotAllowed} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPromptEv}>
+          <Alert severity="error">
+            Please only upload .mp3 and .wav files! Thanks.
+          </Alert>
+        </Snackbar>
       </Container>
     );
   }
 }
 
-export default connect(mapStateToProps, { getArtists, toggleAddArtistDialog })(ConnectedAddAudioItem);
+export default connect(mapStateToProps, { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt })(ConnectedAddAudioItem);
