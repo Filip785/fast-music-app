@@ -5,7 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddArtistDialog from '../AddArtistDialog/AddArtistDialog';
 import PublishIcon from '@material-ui/icons/Publish';
 import Alert from '@material-ui/lab/Alert';
-import { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt } from '../../state/actions/index';
+import { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem } from '../../state/actions/index';
 
 const mapStateToProps = state => ({
   artists: state.artistReducer.artists,
@@ -24,6 +24,8 @@ class ConnectedAddAudioItem extends React.Component {
       fileName: ''
     };
 
+    this.selectedArtist = {};
+
     this.handleAddEv = this.handleAdd.bind(this);
     this.handleChangeTitleEv = this.handleChangeTitle.bind(this);
     this.handleChangeArtistNameEv = this.handleChangeArtistName.bind(this);
@@ -31,6 +33,7 @@ class ConnectedAddAudioItem extends React.Component {
     this.handleToggleDialogEv = this.handleToggleDialog.bind(this);
     this.handleFileChangeEv = this.handleFileChange.bind(this);
     this.handleCloseFileNotAllowedPromptEv = this.handleCloseFileNotAllowedPrompt.bind(this);
+    this.handleBlurArtistNameEv = this.handleBlurArtistName.bind(this);
   }
 
   componentDidMount() {
@@ -38,8 +41,9 @@ class ConnectedAddAudioItem extends React.Component {
   }
 
   handleAdd() {
-    const { title, artistName } = this.state;
-    console.log(`title: ${title}, artist name: ${artistName}`);
+    const { title } = this.state;
+
+    this.props.addAudioItem(title, this.selectedArtist.id, this.props.user.api_token);
   }
 
   handleToggleDialog() {
@@ -50,8 +54,8 @@ class ConnectedAddAudioItem extends React.Component {
     this.setState({ title: event.target.value });
   }
 
-  handleChangeArtistName(event) {
-    this.setState({ artistName: event.target.value });
+  handleChangeArtistName(event, value) {
+    this.setState({ artistName: value ? value.artistName : event.target.value });
   }
 
   handleFileChange(event) {
@@ -63,10 +67,29 @@ class ConnectedAddAudioItem extends React.Component {
     this.props.closeFileNotAllowedPrompt();
   }
 
+  handleBlurArtistName(event) {
+    const artistNameValue = event.target.value.trim();
+
+    if(artistNameValue === '') {
+      this.selectedArtist = {};
+
+      return;
+    }
+
+    const { artists } = this.props;
+    this.selectedArtist = artists.find(item => item.artistName.toLowerCase().includes(event.target.value.toLowerCase())) || {};
+
+    if(!this.selectedArtist.id) {
+      return;
+    }
+
+    this.setState({ artistName: this.selectedArtist.artistName });
+  }
+
   render() {
     const { title, artistName } = this.state;
     const { artists, user, musicFile, fileExtensionNotAllowed } = this.props;
-
+    
     return (
       <Container maxWidth="sm">
         <Paper className="paperPadding">
@@ -85,10 +108,17 @@ class ConnectedAddAudioItem extends React.Component {
                   id="autocomplete-artist"
                   style={{ width: '100%' }}
                   freeSolo
-                  options={artists.map(item => item.artistName)}
-                  renderInput={params => (
-                    <TextField {...params} label="Artist Name" margin="normal" fullWidth value={artistName} onChange={this.handleChangeArtistNameEv} />
-                  )}
+                  options={artists}
+                  getOptionLabel={option => option.artistName}
+                  onChange={this.handleChangeArtistNameEv}
+                  onBlur={this.handleBlurArtistNameEv}
+                  renderInput={params => {
+                    // temporary fix, probably bug in material-ui (TextField not updating value)
+                    params.inputProps.value = artistName;
+                    return (
+                      <TextField value={this.state.artistName} {...params} label="Artist Name" name="artistName" margin="normal" fullWidth onChange={this.handleChangeArtistNameEv} />
+                    );
+                  }}
                 />
                 <Button color="primary" onClick={this.handleToggleDialogEv}>Add New Artist</Button>
               </Grid>
@@ -111,13 +141,13 @@ class ConnectedAddAudioItem extends React.Component {
                       color="primary"
                     >
                       <PublishIcon />
-                      <span style={{paddingLeft: '10px'}}>Add Audio File</span>
+                      <span style={{ paddingLeft: '10px' }}>Add Audio File</span>
                     </Button>
                   </label>
                 </Fragment>
-                {musicFile.name && <div style={{width: '100%', textAlign: 'left'}}>
+                {musicFile.name && <div style={{ width: '100%', textAlign: 'left' }}>
                   <Paper className="paperPaddingFileUpload">
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <div>{musicFile.name}</div>
                       <div>{musicFile.size}</div>
                     </div>
@@ -142,4 +172,4 @@ class ConnectedAddAudioItem extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt })(ConnectedAddAudioItem);
+export default connect(mapStateToProps, { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem })(ConnectedAddAudioItem);

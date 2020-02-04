@@ -5,10 +5,11 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import TabPanel from '../helpers/TabPanel';
-import { toggleItem } from '../../state/actions/index';
+import { toggleItem, getAllAudioItems } from '../../state/actions/index';
 
 const mapStateToProps = state => ({
-  musicItems: state.audioReducer.musicItems
+  musicItems: state.audioReducer.musicItems,
+  user: state.authReducer.user.authUser
 });
 
 class ConnectedDashboard extends React.Component {
@@ -21,6 +22,10 @@ class ConnectedDashboard extends React.Component {
 
     this.handleExpandEv = this.handleExpand.bind(this);
     this.handleChangeEv = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.getAllAudioItems(this.props.user.api_token);
   }
 
   handleChange(_, newValue) {
@@ -48,10 +53,10 @@ class ConnectedDashboard extends React.Component {
             component="nav"
             aria-labelledby="nested-list-subheader"
           >
-            {musicItems.map((el, index) => (
-              <div key={index}>
-                <ListItem button onClick={() => this.handleExpandEv(index)}>
-                  <ListItemText primary={`${el.artist} - ${el.title}`} />
+            {musicItems.map((el) => (
+              <div key={el.id}>
+                <ListItem button onClick={() => this.handleExpandEv(el.id)}>
+                  <ListItemText primary={`${el.artistName} - ${el.songTitle}`} />
                   {el.toggle ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse in={el.toggle} timeout="auto" unmountOnExit>
@@ -76,4 +81,4 @@ class ConnectedDashboard extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { toggleItem })(ConnectedDashboard);
+export default connect(mapStateToProps, { toggleItem, getAllAudioItems })(ConnectedDashboard);

@@ -1,10 +1,7 @@
-import { TOGGLE_ITEM, TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from "../constants";
+import { TOGGLE_ITEM, TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END, ADD_AUDIO_ITEM, GET_ALL_AUDIO_ITEMS } from "../constants";
 
 const initialState = {
-  musicItems: [
-    {id: 0, toggle: false, title: 'JA REPUJEM', artist: 'Smoke Mardeljano', url: 'http://localhost/audio/smoke.mp3'},
-    {id: 1, toggle: false, title: 'BEZ MIKSA', artist: 'Psihoaktiv Trip', url: 'http://localhost/audio/trip.mp3'}
-  ],
+  musicItems: [],
   musicFile: {},
   fileExtensionNotAllowed: false
 };
@@ -12,6 +9,14 @@ const initialState = {
 export default function audio(state = initialState, action) {
   if(action.type === TOGGLE_ITEM) {
     return { ...state, musicItems: state.musicItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) };
+  }
+
+  if(action.type === GET_ALL_AUDIO_ITEMS) {
+    return { ...state, musicItems: action.payload };
+  }
+
+  if(action.type === ADD_AUDIO_ITEM) {
+    return { ...state, musicItems: state.musicItems.concat(action.payload) };
   }
 
   if(action.type === TOGGLE_FILE_CHANGE) {
