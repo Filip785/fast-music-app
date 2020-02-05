@@ -5,13 +5,13 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddArtistDialog from '../AddArtistDialog/AddArtistDialog';
 import PublishIcon from '@material-ui/icons/Publish';
 import Alert from '@material-ui/lab/Alert';
-import { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem } from '../../state/actions/index';
+import { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem, closeFileDataDisplay } from '../../state/actions/index';
 
 const mapStateToProps = state => ({
   artists: state.artistReducer.artists,
   user: state.authReducer.user.authUser,
   musicFile: state.audioReducer.musicFile,
-  fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed
+  fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed,
 });
 
 class ConnectedAddAudioItem extends React.Component {
@@ -40,10 +40,19 @@ class ConnectedAddAudioItem extends React.Component {
     this.props.getArtists(this.props.user.api_token);
   }
 
+  componentWillUnmount() {
+    this.selectedArtist = {};
+    this.props.closeFileDataDisplay();
+  }
+
   handleAdd() {
     const { title } = this.state;
+    const { musicFile } = this.props;
 
-    this.props.addAudioItem(title, this.selectedArtist.id, this.props.user.api_token);
+    this.props.addAudioItem(title, this.selectedArtist.id, {
+      fileName: musicFile.name,
+      fileUpload: musicFile.fileUpload
+    }, this.props.user.id, this.props.user.api_token);
   }
 
   handleToggleDialog() {
@@ -76,8 +85,7 @@ class ConnectedAddAudioItem extends React.Component {
       return;
     }
 
-    const { artists } = this.props;
-    this.selectedArtist = artists.find(item => item.artistName.toLowerCase().includes(event.target.value.toLowerCase())) || {};
+    this.selectedArtist = this.props.artists.find(item => item.artistName.toLowerCase().includes(event.target.value.toLowerCase())) || {};
 
     if(!this.selectedArtist.id) {
       return;
@@ -89,7 +97,7 @@ class ConnectedAddAudioItem extends React.Component {
   render() {
     const { title, artistName } = this.state;
     const { artists, user, musicFile, fileExtensionNotAllowed } = this.props;
-    
+
     return (
       <Container maxWidth="sm">
         <Paper className="paperPadding">
@@ -161,7 +169,7 @@ class ConnectedAddAudioItem extends React.Component {
           </div>
         </Paper>
 
-        <AddArtistDialog handleToggleDialogEv={this.handleToggleDialogEv} handleChangeArtistNameEv={this.handleChangeArtistNameEv} artistName={artistName} userApiToken={user.api_token} />
+        <AddArtistDialog handleToggleDialogEv={this.handleToggleDialogEv} handleChangeArtistNameEv={this.handleChangeArtistNameEv} artistName={artistName} userApiToken={user.api_token} onBlurAddItemForm={this.handleBlurArtistNameEv} />
         <Snackbar open={fileExtensionNotAllowed} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPromptEv}>
           <Alert severity="error">
             Please only upload .mp3 and .wav files! Thanks.
@@ -172,4 +180,4 @@ class ConnectedAddAudioItem extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem })(ConnectedAddAudioItem);
+export default connect(mapStateToProps, { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem, closeFileDataDisplay })(ConnectedAddAudioItem);

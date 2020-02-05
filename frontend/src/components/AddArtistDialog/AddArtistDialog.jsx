@@ -21,7 +21,7 @@ class ConnectedAddArtistDialog extends React.Component {
   }
 
   handleAddArtist() {
-    this.props.createArtist(this.props.artistName, this.props.userApiToken);
+    this.props.createArtist(this.props.artistName, this.props.userApiToken, this.props.onBlurAddItemForm);
   }
 
   render() {

@@ -19,7 +19,7 @@ export function getArtists(userApiToken) {
   };
 }
 
-export function createArtist(artistName, userApiToken) {
+export function createArtist(artistName, userApiToken, onBlurAddItemForm) {
   return dispatch => {
     return axios.post('http://localhost/api/artist/create', {
       artistName
@@ -30,6 +30,7 @@ export function createArtist(artistName, userApiToken) {
     }).then(response => {
       dispatch({ type: CREATE_ARTIST, payload: response.data.artist });
       dispatch({ type: TOGGLE_ADD_ARTIST_DIALOG });
+      onBlurAddItemForm({ target: { value: artistName } });
     }).catch(error => {
       dispatch({ type: ADD_ARTIST_FAILURE, payload: error.response.data.errors.artistName });
     });

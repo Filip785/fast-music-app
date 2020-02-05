@@ -1,6 +1,6 @@
 import axios from 'axios';
 import history from '../../helpers/history';
-import { TOGGLE_ITEM, TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END, ADD_AUDIO_ITEM, DO_LOGOUT, GET_ALL_AUDIO_ITEMS } from '../constants';
+import { TOGGLE_ITEM, TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END, ADD_AUDIO_ITEM, DO_LOGOUT, GET_ALL_AUDIO_ITEMS, CLOSE_FILE_DATA_DISPLAY } from '../constants';
 
 export function toggleItem(id) {
   return {
@@ -26,11 +26,14 @@ export function getAllAudioItems(userApiToken) {
   };
 }
 
-export function addAudioItem(songTitle, artistId, userApiToken) {
+export function addAudioItem(songTitle, artistId, { fileName, fileUpload }, uploaderId, userApiToken) {
   return dispatch => {
     return axios.post('http://localhost/api/audio/create', {
       songTitle,
-      artistId
+      artistId,
+      fileName,
+      fileUpload,
+      uploaderId
     }, {
       headers: {
         Authorization: `Bearer ${userApiToken}`
@@ -72,5 +75,11 @@ export function toggleFileChange(fileName, size, fileType, file) {
 export function closeFileNotAllowedPrompt() {
   return {
     type: FILE_EXTENSION_FORBIDDEN_END
+  };
+}
+
+export function closeFileDataDisplay() {
+  return {
+    type: CLOSE_FILE_DATA_DISPLAY
   };
 }
