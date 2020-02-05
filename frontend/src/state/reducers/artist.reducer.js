@@ -3,6 +3,7 @@ import { GET_ALL_ARTISTS, TOGGLE_ADD_ARTIST_DIALOG, CREATE_ARTIST, ADD_ARTIST_FA
 const initialState = {
   artists: [],
   addArtistDialogOpen: false,
+  withNotice: false,
   addArtistFailure: {},
   selectedArtist: {},
 };
@@ -19,8 +20,9 @@ export default function artist(state = initialState, action) {
   if (action.type === ADD_ARTIST_FAILURE) {
     return { ...state, addArtistFailure: { message: action.payload } };
   }
+
   if (action.type === TOGGLE_ADD_ARTIST_DIALOG) {
-    return { ...state, addArtistDialogOpen: !state.addArtistDialogOpen, addArtistFailure: {} };
+    return { ...state, addArtistDialogOpen: !state.addArtistDialogOpen, withNotice: action.withNotice, addArtistFailure: {} };
   }
 
   return state;

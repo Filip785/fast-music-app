@@ -1,8 +1,18 @@
-import { TOGGLE_ITEM, TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END, ADD_AUDIO_ITEM, GET_ALL_AUDIO_ITEMS, CLOSE_FILE_DATA_DISPLAY } from "../constants";
+import { 
+  TOGGLE_ITEM, 
+  TOGGLE_FILE_CHANGE, 
+  FILE_EXTENSION_FORBIDDEN, 
+  FILE_EXTENSION_FORBIDDEN_END, 
+  ADD_AUDIO_ITEM, 
+  GET_ALL_AUDIO_ITEMS, 
+  ADD_AUDIO_ITEM_FAILURE, 
+  ADD_AUDIO_ITEM_CLEANUP,
+} from "../constants";
 
 const initialState = {
   musicItems: [],
   musicFile: {},
+  musicItemError: {},
   fileExtensionNotAllowed: false,
 };
 
@@ -19,8 +29,16 @@ export default function audio(state = initialState, action) {
     return { ...state, musicItems: state.musicItems.concat(action.payload) };
   }
 
+  if (action.type === ADD_AUDIO_ITEM_FAILURE) {
+    return { ...state, musicItemError: action.payload };
+  }
+
+  if (action.type === ADD_AUDIO_ITEM_CLEANUP) {
+    return { ...state, musicFile: {}, musicItemError: {} };
+  }
+
   if (action.type === TOGGLE_FILE_CHANGE) {
-    return { ...state, musicFile: { name: action.payload, size: action.size, fileUpload: action.file } };
+    return { ...state, musicFile: { name: action.payload, size: action.size, fileUpload: action.file }, musicItemError: { ...state.musicItemError, fileUpload: false } };
   }
 
   if (action.type === FILE_EXTENSION_FORBIDDEN) {
@@ -29,10 +47,6 @@ export default function audio(state = initialState, action) {
 
   if (action.type === FILE_EXTENSION_FORBIDDEN_END) {
     return { ...state, fileExtensionNotAllowed: false }
-  }
-
-  if(action.type === CLOSE_FILE_DATA_DISPLAY) {
-    return { ...state, musicFile: {} };
   }
 
   return state;

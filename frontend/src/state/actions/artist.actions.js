@@ -37,8 +37,9 @@ export function createArtist(artistName, userApiToken, onBlurAddItemForm) {
   };
 }
 
-export function toggleAddArtistDialog() {
+export function toggleAddArtistDialog(withNotice) {
   return {
-    type: TOGGLE_ADD_ARTIST_DIALOG
+    type: TOGGLE_ADD_ARTIST_DIALOG,
+    withNotice
   };
 }

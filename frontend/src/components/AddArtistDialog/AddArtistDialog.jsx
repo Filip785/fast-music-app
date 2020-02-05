@@ -10,7 +10,8 @@ import { Button, TextField } from '@material-ui/core';
 
 const mapStateToProps = state => ({
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
-  addArtistFailure: state.artistReducer.addArtistFailure
+  addArtistFailure: state.artistReducer.addArtistFailure,
+  withNotice: state.artistReducer.withNotice,
 });
 
 class ConnectedAddArtistDialog extends React.Component {
@@ -25,12 +26,12 @@ class ConnectedAddArtistDialog extends React.Component {
   }
 
   render() {
-    const { addArtistDialogOpen, artistName, addArtistFailure } = this.props;
-
+    const { addArtistDialogOpen, artistName, addArtistFailure, withNotice } = this.props;
     return (
       <Dialog open={addArtistDialogOpen} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add new artist</DialogTitle>
         <DialogContent>
+        {withNotice && <p><strong>Entered artist is not yet in our database.</strong></p>}
           <DialogContentText>
             To add new artist, please enter it in the field below. Please don't add duplicates.
           </DialogContentText>

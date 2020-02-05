@@ -61,11 +61,14 @@ class ConnectedDashboard extends React.Component {
                 </ListItem>
                 <Collapse in={el.toggle} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem>
-                      <audio controls>
+                    <ListItem style={{display: 'flex', flexDirection: "column"}}>
+                      <audio controls style={{ width: '100%' }}>
                         <source src={el.url} />
                         Your browser does not support the audio element.
-                    </audio>
+                      </audio>
+                      <div style={{marginTop: '20px'}}>
+                        Uploaded by <strong>{el.uploader.name}</strong>
+                      </div>
                     </ListItem>
                   </List>
                 </Collapse>

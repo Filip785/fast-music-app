@@ -1,6 +1,17 @@
 import axios from 'axios';
 import history from '../../helpers/history';
-import { TOGGLE_ITEM, TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END, ADD_AUDIO_ITEM, DO_LOGOUT, GET_ALL_AUDIO_ITEMS, CLOSE_FILE_DATA_DISPLAY } from '../constants';
+import { 
+  TOGGLE_ITEM, 
+  TOGGLE_FILE_CHANGE, 
+  FILE_EXTENSION_FORBIDDEN_END, 
+  ADD_AUDIO_ITEM, 
+  DO_LOGOUT, 
+  GET_ALL_AUDIO_ITEMS, 
+  ADD_AUDIO_ITEM_FAILURE, 
+  ADD_AUDIO_ITEM_CLEANUP
+} from '../constants';
+
+
 
 export function toggleItem(id) {
   return {
@@ -42,14 +53,15 @@ export function addAudioItem(songTitle, artistId, { fileName, fileUpload }, uplo
       dispatch({ type: ADD_AUDIO_ITEM, payload: response.data.audioItem });
       history.push('/dashboard');
     }).catch(error => {
-      // HANDLE THESE
+      if(error.response.status === 401) {
+        localStorage.removeItem('authUser');
+        dispatch({ type: DO_LOGOUT });
+        history.push('/login');
 
-      // EMPTY SONG TITLE
+        return;
+      }
 
-      // user is not logged in
-      // localStorage.removeItem('authUser');
-      // dispatch({ type: DO_LOGOUT });
-      // history.push('/login');
+      dispatch({ type: ADD_AUDIO_ITEM_FAILURE, payload: error.response.data.errors });
     });
   };
 }
@@ -78,8 +90,8 @@ export function closeFileNotAllowedPrompt() {
   };
 }
 
-export function closeFileDataDisplay() {
+export function cleanupAddFilePage() {
   return {
-    type: CLOSE_FILE_DATA_DISPLAY
+    type: ADD_AUDIO_ITEM_CLEANUP
   };
 }

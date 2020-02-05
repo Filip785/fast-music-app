@@ -17,9 +17,12 @@ class CreateAudioItemsTable extends Migration
 			$table->bigIncrements('id');
 			$table->string('songTitle');
 			$table->unsignedBigInteger('artistId');
+			$table->unsignedBigInteger('uploaderId');
+			$table->string('audioUrl');
 			$table->timestamps();
 
 			$table->foreign('artistId')->references('id')->on('artists')->onDelete('cascade');
+			$table->foreign('uploaderId')->references('id')->on('users')->onDelete('cascade');
 		});
 	}
 
