@@ -18,7 +18,8 @@ import {
   toggleFileChange,
   closeFileNotAllowedPrompt,
   addAudioItem,
-  cleanupAddFilePage
+  cleanupAddFilePage,
+  toggleLoadSpinner
 } from '../../state/actions';
 
 const mapStateToProps = state => ({
@@ -64,6 +65,8 @@ class ConnectedAddAudioItem extends React.Component {
   handleAdd() {
     const { title } = this.state;
     const { musicFile } = this.props;
+
+    this.props.toggleLoadSpinner();
 
     this.props.addAudioItem(title, this.selectedArtist.id, {
       fileName: musicFile.name,
@@ -211,5 +214,6 @@ export default connect(mapStateToProps, {
   toggleFileChange,
   closeFileNotAllowedPrompt,
   addAudioItem,
-  cleanupAddFilePage
+  cleanupAddFilePage,
+  toggleLoadSpinner
 }) (ConnectedAddAudioItem);

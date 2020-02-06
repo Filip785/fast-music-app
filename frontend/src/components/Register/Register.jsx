@@ -7,7 +7,7 @@ import {
   Button, 
   Container 
 } from '@material-ui/core';
-import { attemptRegister } from '../../state/actions'; 
+import { attemptRegister, toggleLoadSpinner } from '../../state/actions'; 
 
 const mapStateToProps = state => ({
   errors: state.authReducer.registerErrors
@@ -31,6 +31,8 @@ class ConnectedRegister extends React.Component {
 
   handleRegister() {
     const { name, email, password } = this.state;
+
+    this.props.toggleLoadSpinner();
 
     this.props.attemptRegister(name, email, password);
   }
@@ -84,5 +86,6 @@ class ConnectedRegister extends React.Component {
 }
 
 export default connect(mapStateToProps, { 
-  attemptRegister 
+  attemptRegister,
+  toggleLoadSpinner
 }) (ConnectedRegister);

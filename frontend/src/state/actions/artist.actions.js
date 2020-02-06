@@ -1,12 +1,13 @@
 import axios from 'axios';
 import history from '../../helpers/history';
 import { 
-  GET_ALL_ARTISTS, 
-  DO_LOGOUT, 
+  GET_ALL_ARTISTS,
   TOGGLE_ADD_ARTIST_DIALOG, 
   CREATE_ARTIST, 
-  ADD_ARTIST_FAILURE 
+  ADD_ARTIST_FAILURE, 
+  TOGGLE_LOADING_SPINNER
 } from '../constants';
+import performFrontendLogout from '../../helpers/performFrontendLogout';
 
 export function getArtists(userApiToken) {
   return dispatch => {
@@ -17,10 +18,7 @@ export function getArtists(userApiToken) {
     }).then(response => {
       dispatch({ type: GET_ALL_ARTISTS, payload: response.data.artists });
     }).catch(_ => {
-      // user is not logged in
-      localStorage.removeItem('authUser');
-      dispatch({ type: DO_LOGOUT });
-      history.push('/login');
+      performFrontendLogout(dispatch, history);
     });
   };
 }
@@ -37,8 +35,16 @@ export function createArtist(artistName, userApiToken, onBlurAddItemForm) {
       dispatch({ type: CREATE_ARTIST, payload: response.data.artist });
       dispatch({ type: TOGGLE_ADD_ARTIST_DIALOG });
       onBlurAddItemForm({ target: { value: artistName } });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
+      if(error.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
+
+        return;
+      }
+
       dispatch({ type: ADD_ARTIST_FAILURE, payload: error.response.data.errors.artistName });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
     });
   };
 }

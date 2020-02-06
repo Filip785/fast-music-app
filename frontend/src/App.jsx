@@ -15,7 +15,8 @@ import {
   Typography, 
   Toolbar, 
   AppBar, 
-  Button
+  Button,
+  CircularProgress
 } from '@material-ui/core';
 import { doLogout } from './state/actions';
 
@@ -33,7 +34,8 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  auth: state.authReducer
+  auth: state.authReducer,
+  isLoading: state.loadReducer.isLoading
 });
 
 class ConnectedApp extends React.Component {
@@ -50,9 +52,9 @@ class ConnectedApp extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, isLoading } = this.props;
     const { user: { loggedIn, authUser } } = this.props.auth;
-
+    
     return (
       <Router history={history}>
           <div className="App">
@@ -89,6 +91,10 @@ class ConnectedApp extends React.Component {
               </Switch>
             </div>
           </div>
+
+          {isLoading && <div className="spinner">
+            <CircularProgress className="mainProgress" size={300} color="secondary" />
+          </div>}
       </Router>
     );
   }

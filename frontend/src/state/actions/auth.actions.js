@@ -6,7 +6,8 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
   ATTEMPT_LOGIN_FAILURE,
-  ATTEMPT_LOGIN_FAILURE_END
+  ATTEMPT_LOGIN_FAILURE_END,
+  TOGGLE_LOADING_SPINNER
 } from '../constants';
 
 export function attemptLogin(email, password) {
@@ -16,9 +17,9 @@ export function attemptLogin(email, password) {
     }).then(response => {
       dispatch({ type: ATTEMPT_LOGIN, payload: response.data });
       localStorage.setItem('authUser', JSON.stringify(response.data));
-      history.push('/dashboard');
     }).catch(_ => {
       dispatch({ type: ATTEMPT_LOGIN_FAILURE });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
     });
   };
 }
@@ -36,8 +37,10 @@ export function attemptRegister(name, email, password) {
     }).then(_ => {
       dispatch({ type: REGISTER_SUCCESS });
       history.push('/login');
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
       dispatch({ type: REGISTER_FAILURE, payload: error.response.data.errors });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
     });
   };
 }

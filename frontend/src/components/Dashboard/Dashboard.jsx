@@ -12,7 +12,8 @@ import {
   ListItemText, 
   Collapse 
 } from '@material-ui/core';
-import { toggleItem, getAllAudioItems } from '../../state/actions';
+import { toggleItem, getAllAudioItems, toggleLoadSpinner } from '../../state/actions';
+import history from '../../helpers/history';
 
 const mapStateToProps = state => ({
   musicItems: state.audioReducer.musicItems,
@@ -32,6 +33,13 @@ class ConnectedDashboard extends React.Component {
   }
 
   componentDidMount() {
+    if(!this.props.location.state) {
+      this.props.toggleLoadSpinner();
+    } else {
+      // clear location state history
+      history.replace({ pathname: '/dashboard', state: null });
+    }
+
     this.props.getAllAudioItems(this.props.user.api_token);
   }
 
@@ -93,5 +101,6 @@ class ConnectedDashboard extends React.Component {
 
 export default connect(mapStateToProps, { 
   toggleItem, 
-  getAllAudioItems 
+  getAllAudioItems,
+  toggleLoadSpinner
 }) (ConnectedDashboard);

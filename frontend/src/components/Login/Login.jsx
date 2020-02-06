@@ -9,7 +9,7 @@ import {
   Container, 
   Snackbar 
 } from '@material-ui/core';
-import { attemptLogin, attemptLoginFailureEnd } from '../../state/actions'; 
+import { attemptLogin, attemptLoginFailureEnd, toggleLoadSpinner } from '../../state/actions'; 
 
 const mapStateToProps = state => ({
   registered: state.authReducer.registered,
@@ -33,6 +33,8 @@ class ConnectedLogin extends React.Component {
 
   handleSubmit() {
     const { email, password } = this.state; 
+
+    this.props.toggleLoadSpinner();
 
     this.props.attemptLogin(email, password);
   }
@@ -89,5 +91,6 @@ class ConnectedLogin extends React.Component {
 
 export default connect(mapStateToProps, { 
   attemptLogin, 
-  attemptLoginFailureEnd 
+  attemptLoginFailureEnd,
+  toggleLoadSpinner
 }) (ConnectedLogin);

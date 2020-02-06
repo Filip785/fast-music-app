@@ -9,7 +9,7 @@ import {
   Button, 
   TextField 
 } from '@material-ui/core';
-import { toggleAddArtistDialog, createArtist } from '../../state/actions';
+import { toggleAddArtistDialog, createArtist, toggleLoadSpinner } from '../../state/actions';
 
 const mapStateToProps = state => ({
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
@@ -25,6 +25,7 @@ class ConnectedAddArtistDialog extends React.Component {
   }
 
   handleAddArtist() {
+    this.props.toggleLoadSpinner();
     this.props.createArtist(this.props.artistName, this.props.userApiToken, this.props.onBlurAddItemForm);
   }
 
@@ -66,5 +67,6 @@ class ConnectedAddArtistDialog extends React.Component {
 
 export default connect(mapStateToProps, { 
   toggleAddArtistDialog, 
-  createArtist 
+  createArtist,
+  toggleLoadSpinner
 }) (ConnectedAddArtistDialog);
