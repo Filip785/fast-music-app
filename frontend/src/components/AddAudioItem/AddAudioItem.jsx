@@ -10,7 +10,12 @@ import {
   TextField,
   Button,
   Container,
-  Snackbar
+  Snackbar,
+  Radio,
+  FormControlLabel,
+  FormLabel,
+  RadioGroup,
+  FormControl
 } from '@material-ui/core';
 import {
   getArtists,
@@ -19,7 +24,8 @@ import {
   closeFileNotAllowedPrompt,
   addAudioItem,
   cleanupAddFilePage,
-  toggleLoadSpinner
+  toggleLoadSpinner,
+  getSpecificUsers
 } from '../../state/actions';
 
 const mapStateToProps = state => ({
@@ -29,6 +35,7 @@ const mapStateToProps = state => ({
   musicFile: state.audioReducer.musicFile,
   musicItemError: state.audioReducer.musicItemError,
   fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed,
+  specificUsers: state.audioReducer.specificUsers
 });
 
 class ConnectedAddAudioItem extends React.Component {
@@ -38,10 +45,12 @@ class ConnectedAddAudioItem extends React.Component {
     this.state = {
       title: '',
       artistName: '',
-      fileName: ''
+      fileName: '',
+      visibility: 0,
     };
 
     this.selectedArtist = {};
+    this.selectedUsers = [];
 
     this.handleAddEv = this.handleAdd.bind(this);
     this.handleChangeTitleEv = this.handleChangeTitle.bind(this);
@@ -51,6 +60,8 @@ class ConnectedAddAudioItem extends React.Component {
     this.handleFileChangeEv = this.handleFileChange.bind(this);
     this.handleCloseFileNotAllowedPromptEv = this.handleCloseFileNotAllowedPrompt.bind(this);
     this.handleBlurArtistNameEv = this.handleBlurArtistName.bind(this);
+    this.handleVisibilityChangeEv = this.handleVisibilityChange.bind(this);
+    this.handleAllowedUserEv = this.handleAllowedUser.bind(this);
   }
 
   componentDidMount() {
@@ -63,7 +74,7 @@ class ConnectedAddAudioItem extends React.Component {
   }
 
   handleAdd() {
-    const { title } = this.state;
+    const { title, visibility } = this.state;
     const { musicFile } = this.props;
 
     this.props.toggleLoadSpinner();
@@ -71,7 +82,7 @@ class ConnectedAddAudioItem extends React.Component {
     this.props.addAudioItem(title, this.selectedArtist.id, {
       fileName: musicFile.name,
       fileUpload: musicFile.fileUpload
-    }, this.props.user.id, this.props.user.api_token);
+    }, this.props.user.id, visibility, this.selectedUsers.map(x => x.id), this.props.user.api_token);
   }
 
   handleToggleDialog({ withNotice }) {
@@ -91,6 +102,22 @@ class ConnectedAddAudioItem extends React.Component {
 
   handleChangeArtistName(event, value) {
     this.setState({ artistName: value ? value.artistName : event.target.value });
+  }
+
+  handleVisibilityChange(event) {
+    const { specificUsers } = this.props;
+
+    const value = Number(event.target.value);
+    this.setState({ visibility: value });
+
+    // only specific users
+    if(value === 2 && specificUsers.length === 0) {
+      this.props.getSpecificUsers(this.props.user.id, this.props.user.api_token);
+    }
+
+    if(value !== 2) {
+      this.selectedUsers = [];
+    }
   }
 
   handleFileChange(event) {
@@ -122,9 +149,13 @@ class ConnectedAddAudioItem extends React.Component {
     this.setState({ artistName: this.selectedArtist.artistName });
   }
 
+  handleAllowedUser(_, value) {
+    this.selectedUsers = value;
+  }
+
   render() {
-    const { title, artistName } = this.state;
-    const { artists, user, musicFile, fileExtensionNotAllowed, musicItemError } = this.props;
+    const { title, artistName, visibility } = this.state;
+    const { artists, user, musicFile, fileExtensionNotAllowed, musicItemError, specificUsers } = this.props;
 
     return (
       <Container maxWidth="sm">
@@ -191,6 +222,54 @@ class ConnectedAddAudioItem extends React.Component {
                 </div>}
               </Grid>
             </Grid>
+
+            <Grid container spacing={8} alignItems="flex-end">
+              <Grid item md={true} sm={true} xs={true}>
+                <FormControl style={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}>
+                  <FormLabel style={{fontWeight: 'bold'}} component="legend">This item will be visible to:</FormLabel>
+
+                  <RadioGroup style={{display: 'flex', flexDirection: 'row'}} value={visibility} defaultValue={0} onChange={this.handleVisibilityChangeEv}>
+                    <FormControlLabel
+                      value="0"
+                      control={<Radio checked={visibility === 0} color="primary" />}
+                      label="Everyone"
+                      labelPlacement="end"
+                    />
+                    <FormControlLabel 
+                      value="1"
+                      control={<Radio checked={visibility === 1} color="primary" />}
+                      label="Just me"
+                      labelPlacement="end"
+                    />
+                    <FormControlLabel 
+                      value="2"
+                      control={<Radio checked={visibility === 2} color="primary" />}
+                      label="Specific users"
+                      labelPlacement="end"
+                    />
+                  </RadioGroup>
+                </FormControl>
+
+                {visibility === 2 && <Autocomplete
+                  multiple
+                  id="specific-users"
+                  options={specificUsers}
+                  getOptionLabel={user => user.username}
+                  onChange={this.handleAllowedUserEv}
+                  renderInput={params => (
+                    <TextField 
+                      {...params}
+                      error={Boolean(musicItemError.allowedUsers)}
+                      helperText={musicItemError.allowedUsers}
+                      label="Pick users who should see this item"
+                      placeholder="Users"
+                      fullWidth
+                    />
+                  )}
+                />}
+              </Grid>
+            </Grid>
+
             <Grid container justify="center" style={{ marginTop: '25px' }}>
               <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleAddEv}>Add</Button>
             </Grid>
@@ -215,5 +294,6 @@ export default connect(mapStateToProps, {
   closeFileNotAllowedPrompt,
   addAudioItem,
   cleanupAddFilePage,
-  toggleLoadSpinner
+  toggleLoadSpinner,
+  getSpecificUsers
 }) (ConnectedAddAudioItem);

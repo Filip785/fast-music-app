@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\AudioItem;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class AudioItemApiController extends Controller
 {
 	public function index(Request $request)
 	{
-		$audioItems = AudioItem::all();
+		$data = $request->all();
+
+		$currentUser = User::find($data['userId']);
+
+		$audioItems = $currentUser->accessibleItems;
 
 		// process
 		$audioItemsReturn = [];
@@ -38,17 +44,26 @@ class AudioItemApiController extends Controller
 
 	public function create(Request $request)
 	{
-		$request->validate([
+		$data = $request->all();
+
+		$validator = Validator::make($data, [
 			'songTitle' => 'required',
 			'artistId' => 'required',
 			'fileUpload' => 'required'
 		], [
 			'songTitle.required' => 'Please enter song title.',
 			'artistId.required' => 'Please choose an artist.',
-			'fileUpload.required' => 'Please choose a audio file.'
+			'fileUpload.required' => 'Please choose a audio file.',
+			'allowedUsers.required' => 'Please pick at least one user to share with.'
 		]);
 
-		$data = $request->all();
+		$validator->sometimes('allowedUsers', 'required', function ($input) {
+			return intval($input->visibility) === 2;
+		});
+
+		if($validator->fails()) {
+			return response()->json($validator->errors(), 422);
+		}
 
 		$fileUpload = file_get_contents($data['fileUpload']);
 		Storage::disk('public')->put('audio/'.$data['fileName'], $fileUpload);
@@ -61,6 +76,28 @@ class AudioItemApiController extends Controller
 		]);
 
 		$uploader = $audioItem->uploader;
+
+		switch($data['visibility']) {
+			// public
+			case 0:
+				$allUsers = User::all();
+				$audioItem->allowedUsers()->attach($allUsers);
+				break;
+			// private
+			case 1:
+				$audioItem->allowedUsers()->save($uploader);
+				break;
+			// specific users
+			case 2:
+				$wantedUsers = User::find($data['allowedUsers']);
+				$wantedUsers->prepend($uploader);
+
+				$audioItem->allowedUsers()->attach($wantedUsers);
+				break;
+			default:
+				die('mistake');
+				break;
+		}
 
 		return response()->json([
 			'audioItem' => [

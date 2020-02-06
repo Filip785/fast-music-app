@@ -7,6 +7,8 @@ import {
   GET_ALL_AUDIO_ITEMS, 
   ADD_AUDIO_ITEM_FAILURE, 
   ADD_AUDIO_ITEM_CLEANUP,
+  DASHBOARD_CLEANUP,
+  GET_SPECIFIC_USERS
 } from '../constants';
 
 const initialState = {
@@ -14,6 +16,7 @@ const initialState = {
   musicFile: {},
   musicItemError: {},
   fileExtensionNotAllowed: false,
+  specificUsers: []
 };
 
 export default function audio(state = initialState, action) {
@@ -47,6 +50,14 @@ export default function audio(state = initialState, action) {
 
   if (action.type === FILE_EXTENSION_FORBIDDEN_END) {
     return { ...state, fileExtensionNotAllowed: false }
+  }
+
+  if (action.type === GET_SPECIFIC_USERS) {
+    return { ...state, specificUsers: action.payload };
+  }
+
+  if(action.type === DASHBOARD_CLEANUP) {
+    return { ...state, musicItems: [] };
   }
 
   return state;

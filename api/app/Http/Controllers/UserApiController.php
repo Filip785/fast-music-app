@@ -14,6 +14,7 @@ class UserApiController extends Controller
 	{
 		$request->validate([
 			'name' => 'required',
+			'username' => 'required|unique:users',
 			'email' => 'required|unique:users|email',
 			'password' => 'required|min:6'
 		]);
@@ -23,6 +24,7 @@ class UserApiController extends Controller
 
 		$user = new User([
 			'name' => $data['name'],
+			'username' => $data['username'],
 			'email' => $data['email'],
 			'password' => Hash::make($data['password']),
 		]);
@@ -53,6 +55,23 @@ class UserApiController extends Controller
 	{
 		return response()->json([
 			'user' => Auth::user()
+		], 200);
+	}
+
+	public function specific($exceptUserId) {
+		$specificUsers = User::all()->except($exceptUserId);
+
+		$specificUsersReturn = [];
+
+		foreach($specificUsers as $k => $specificUser) {
+			$specificUsersReturn[$k] = [
+				'id' => $specificUser->id,
+				'username' => $specificUser->username
+			];
+		}
+
+		return response()->json([
+			'specificUsers' => $specificUsersReturn
 		], 200);
 	}
 }

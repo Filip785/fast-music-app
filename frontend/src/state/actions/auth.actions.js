@@ -30,10 +30,10 @@ export function attemptLoginFailureEnd() {
   };
 }
 
-export function attemptRegister(name, email, password) {
+export function attemptRegister(name, username, email, password) {
   return dispatch => {
     return axios.post('http://localhost/api/user/create', {
-      name, email, password
+      name, username, email, password
     }).then(_ => {
       dispatch({ type: REGISTER_SUCCESS });
       history.push('/login');

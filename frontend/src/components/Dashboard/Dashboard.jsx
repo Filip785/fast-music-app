@@ -12,8 +12,9 @@ import {
   ListItemText, 
   Collapse 
 } from '@material-ui/core';
-import { toggleItem, getAllAudioItems, toggleLoadSpinner } from '../../state/actions';
+import { toggleItem, getAllAudioItems, toggleLoadSpinner, cleanupDashboardPage } from '../../state/actions';
 import history from '../../helpers/history';
+import { Link } from 'react-router-dom';
 
 const mapStateToProps = state => ({
   musicItems: state.audioReducer.musicItems,
@@ -40,7 +41,11 @@ class ConnectedDashboard extends React.Component {
       history.replace({ pathname: '/dashboard', state: null });
     }
 
-    this.props.getAllAudioItems(this.props.user.api_token);
+    this.props.getAllAudioItems(this.props.user.id, this.props.user.api_token);
+  }
+
+  componentWillUnmount() {
+    this.props.cleanupDashboardPage();
   }
 
   handleChange(_, newValue) {
@@ -52,7 +57,7 @@ class ConnectedDashboard extends React.Component {
   }
 
   render() {
-    const { musicItems } = this.props;
+    const { musicItems, user } = this.props;
     const { value } = this.state;
 
     return (
@@ -82,7 +87,7 @@ class ConnectedDashboard extends React.Component {
                         Your browser does not support the audio element.
                       </audio>
                       <div style={{marginTop: '20px'}}>
-                        Uploaded by <strong>{el.uploader.name}</strong>
+                        { (el.uploader.id === user.id) && <div style={{textAlign: 'center'}}><Link to={`/edit-item/${el.id}`}>Edit item</Link></div> }Uploaded by <strong>{el.uploader.name}</strong>
                       </div>
                     </ListItem>
                   </List>
@@ -102,5 +107,6 @@ class ConnectedDashboard extends React.Component {
 export default connect(mapStateToProps, { 
   toggleItem, 
   getAllAudioItems,
-  toggleLoadSpinner
+  toggleLoadSpinner,
+  cleanupDashboardPage
 }) (ConnectedDashboard);

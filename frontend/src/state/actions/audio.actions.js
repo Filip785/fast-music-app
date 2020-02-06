@@ -9,10 +9,10 @@ import {
   GET_ALL_AUDIO_ITEMS,
   ADD_AUDIO_ITEM_FAILURE,
   ADD_AUDIO_ITEM_CLEANUP,
-  TOGGLE_LOADING_SPINNER
+  TOGGLE_LOADING_SPINNER,
+  DASHBOARD_CLEANUP,
+  GET_SPECIFIC_USERS
 } from '../constants';
-
-
 
 export function toggleItem(id) {
   return {
@@ -21,11 +21,14 @@ export function toggleItem(id) {
   };
 }
 
-export function getAllAudioItems(userApiToken) {
+export function getAllAudioItems(userId, userApiToken) {
   return dispatch => {
     return axios.get('http://localhost/api/audio', {
       headers: {
         Authorization: `Bearer ${userApiToken}`
+      },
+      params: {
+        userId
       }
     }).then(response => {
       dispatch({ type: GET_ALL_AUDIO_ITEMS, payload: response.data.audioItems });
@@ -36,14 +39,16 @@ export function getAllAudioItems(userApiToken) {
   };
 }
 
-export function addAudioItem(songTitle, artistId, { fileName, fileUpload }, uploaderId, userApiToken) {
+export function addAudioItem(songTitle, artistId, { fileName, fileUpload }, uploaderId, visibility, allowedUsers, userApiToken) {
   return dispatch => {
     return axios.post('http://localhost/api/audio/create', {
       songTitle,
       artistId,
       fileName,
       fileUpload,
-      uploaderId
+      uploaderId,
+      visibility,
+      allowedUsers
     }, {
       headers: {
         Authorization: `Bearer ${userApiToken}`
@@ -58,7 +63,7 @@ export function addAudioItem(songTitle, artistId, { fileName, fileUpload }, uplo
         return;
       }
 
-      dispatch({ type: ADD_AUDIO_ITEM_FAILURE, payload: error.response.data.errors });
+      dispatch({ type: ADD_AUDIO_ITEM_FAILURE, payload: error.response.data });
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     });
   };
@@ -91,5 +96,25 @@ export function closeFileNotAllowedPrompt() {
 export function cleanupAddFilePage() {
   return {
     type: ADD_AUDIO_ITEM_CLEANUP
+  };
+}
+
+export function cleanupDashboardPage() {
+  return {
+    type: DASHBOARD_CLEANUP
+  };
+}
+
+export function getSpecificUsers(exceptUserId, userApiToken) {
+  return dispatch => {
+    return axios.get(`http://localhost/api/user/specific/${exceptUserId}`, {
+      headers: {
+        Authorization: `Bearer ${userApiToken}`
+      }
+    }).then(response => {
+      dispatch({ type: GET_SPECIFIC_USERS, payload: response.data.specificUsers });
+    }).catch(_ => {
+      performFrontendLogout(dispatch, history);
+    });
   };
 }

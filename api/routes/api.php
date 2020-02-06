@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('user/create', 'UserApiController@create');
 Route::post('user/login', 'UserApiController@login');
+Route::middleware('auth:api')->get('user/specific/{exceptUserId}', 'UserApiController@specific');
 Route::middleware('auth:api')->post('user/details', 'UserApiController@details');
 
 Route::middleware('auth:api')->get('artist', 'ArtistApiController@index');

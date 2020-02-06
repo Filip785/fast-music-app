@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AudioItem extends Model
 {
 	protected $fillable = [
-		'songTitle', 'artistId', 'audioUrl', 'uploaderId'
+		'songTitle', 'artistId', 'audioUrl', 'uploaderId', 'visibility'
 	];
 
 	public function artist() {
@@ -16,5 +16,9 @@ class AudioItem extends Model
 
 	public function uploader() {
 		return $this->hasOne('App\User', 'id', 'uploaderId');
+	}
+
+	public function allowedUsers() {
+		return $this->belongsToMany('App\User')->withTimestamps();
 	}
 }
