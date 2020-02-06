@@ -1,11 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Container, AppBar, Tabs, Tab, List, ListItem, ListItemText } from '@material-ui/core';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
 import TabPanel from '../helpers/TabPanel';
-import { toggleItem, getAllAudioItems } from '../../state/actions/index';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { 
+  Container, 
+  AppBar, 
+  Tabs, 
+  Tab, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Collapse 
+} from '@material-ui/core';
+import { toggleItem, getAllAudioItems } from '../../state/actions';
 
 const mapStateToProps = state => ({
   musicItems: state.audioReducer.musicItems,
@@ -84,4 +91,7 @@ class ConnectedDashboard extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { toggleItem, getAllAudioItems })(ConnectedDashboard);
+export default connect(mapStateToProps, { 
+  toggleItem, 
+  getAllAudioItems 
+}) (ConnectedDashboard);

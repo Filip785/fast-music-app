@@ -1,20 +1,23 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import './App.css';
+import { Link, Router, Switch } from 'react-router-dom';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
-import { Link, Router, Switch } from 'react-router-dom';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
 import Dashboard from './components/Dashboard/Dashboard';
-import history from './helpers/history';
 import PrivateRoute from './helpers/PrivateRoute';
-import { connect } from 'react-redux';
-import { withStyles, Typography } from '@material-ui/core';
 import PublicRoute from './helpers/PublicRoute';
-import { doLogout } from './state/actions/index';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import history from './helpers/history';
 import AddAudioItem from './components/AddAudioItem/AddAudioItem';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { 
+  withStyles, 
+  Typography, 
+  Toolbar, 
+  AppBar, 
+  Button
+} from '@material-ui/core';
+import { doLogout } from './state/actions';
 
 const styles = theme => ({
   root: {
@@ -91,6 +94,8 @@ class ConnectedApp extends React.Component {
   }
 }
 
-const App = connect(mapStateToProps, { doLogout })(ConnectedApp);
+const App = connect(mapStateToProps, { 
+  doLogout 
+}) (ConnectedApp);
 
 export default withStyles(styles)(App);

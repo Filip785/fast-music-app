@@ -7,7 +7,7 @@ import {
   GET_ALL_AUDIO_ITEMS, 
   ADD_AUDIO_ITEM_FAILURE, 
   ADD_AUDIO_ITEM_CLEANUP,
-} from "../constants";
+} from '../constants';
 
 const initialState = {
   musicItems: [],

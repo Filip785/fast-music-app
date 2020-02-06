@@ -1,3 +1,5 @@
+import axios from 'axios';
+import history from '../../helpers/history';
 import {
   ATTEMPT_LOGIN,
   DO_LOGOUT,
@@ -5,9 +7,7 @@ import {
   REGISTER_FAILURE,
   ATTEMPT_LOGIN_FAILURE,
   ATTEMPT_LOGIN_FAILURE_END
-} from '../constants/index';
-import axios from 'axios';
-import history from '../../helpers/history';
+} from '../constants';
 
 export function attemptLogin(email, password) {
   return dispatch => {

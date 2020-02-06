@@ -1,19 +1,33 @@
 import React, { Fragment } from 'react';
-import { Paper, Grid, TextField, Button, Container, Snackbar } from '@material-ui/core';
 import { connect } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddArtistDialog from '../AddArtistDialog/AddArtistDialog';
 import PublishIcon from '@material-ui/icons/Publish';
 import Alert from '@material-ui/lab/Alert';
-import { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem, cleanupAddFilePage } from '../../state/actions/index';
+import {
+  Paper,
+  Grid,
+  TextField,
+  Button,
+  Container,
+  Snackbar
+} from '@material-ui/core';
+import {
+  getArtists,
+  toggleAddArtistDialog,
+  toggleFileChange,
+  closeFileNotAllowedPrompt,
+  addAudioItem,
+  cleanupAddFilePage
+} from '../../state/actions';
 
 const mapStateToProps = state => ({
-  artists: state.artistReducer.artists,
   user: state.authReducer.user.authUser,
-  musicFile: state.audioReducer.musicFile,
-  fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed,
+  artists: state.artistReducer.artists,
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
+  musicFile: state.audioReducer.musicFile,
   musicItemError: state.audioReducer.musicItemError,
+  fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed,
 });
 
 class ConnectedAddAudioItem extends React.Component {
@@ -58,10 +72,10 @@ class ConnectedAddAudioItem extends React.Component {
   }
 
   handleToggleDialog({ withNotice }) {
-    const{ addArtistDialogOpen } = this.props;
+    const { addArtistDialogOpen } = this.props;
 
     // dialog is gonna close
-    if(addArtistDialogOpen) {
+    if (addArtistDialogOpen) {
       this.setState({ artistName: '' });
     }
 
@@ -88,7 +102,7 @@ class ConnectedAddAudioItem extends React.Component {
   handleBlurArtistName(event) {
     const artistNameValue = event.target.value.trim();
 
-    if(artistNameValue === '') {
+    if (artistNameValue === '') {
       this.selectedArtist = {};
 
       return;
@@ -96,7 +110,7 @@ class ConnectedAddAudioItem extends React.Component {
 
     this.selectedArtist = this.props.artists.find(item => item.artistName.toLowerCase().includes(event.target.value.toLowerCase())) || {};
 
-    if(!this.selectedArtist.id) {
+    if (!this.selectedArtist.id) {
       this.handleToggleDialog({ withNotice: true });
 
       return;
@@ -163,7 +177,7 @@ class ConnectedAddAudioItem extends React.Component {
                     </Button>
                   </label>
                 </Fragment>
-                {musicItemError.fileUpload && <div><p style={{color: 'red'}}>{musicItemError.fileUpload}</p></div>}
+                {musicItemError.fileUpload && <div><p style={{ color: 'red' }}>{musicItemError.fileUpload}</p></div>}
                 {musicFile.name && <div style={{ width: '100%', textAlign: 'left' }}>
                   <Paper className="paperPaddingFileUpload">
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -191,4 +205,11 @@ class ConnectedAddAudioItem extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getArtists, toggleAddArtistDialog, toggleFileChange, closeFileNotAllowedPrompt, addAudioItem, cleanupAddFilePage })(ConnectedAddAudioItem);
+export default connect(mapStateToProps, {
+  getArtists,
+  toggleAddArtistDialog,
+  toggleFileChange,
+  closeFileNotAllowedPrompt,
+  addAudioItem,
+  cleanupAddFilePage
+}) (ConnectedAddAudioItem);

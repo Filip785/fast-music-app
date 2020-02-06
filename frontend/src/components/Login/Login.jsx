@@ -1,8 +1,15 @@
 import React from 'react';
-import { Paper, Grid, TextField, Button, Container, Snackbar } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { attemptLogin, attemptLoginFailureEnd } from '../../state/actions/index'; 
 import Alert from '@material-ui/lab/Alert';
+import { 
+  Paper, 
+  Grid, 
+  TextField, 
+  Button, 
+  Container, 
+  Snackbar 
+} from '@material-ui/core';
+import { attemptLogin, attemptLoginFailureEnd } from '../../state/actions'; 
 
 const mapStateToProps = state => ({
   registered: state.authReducer.registered,
@@ -80,4 +87,7 @@ class ConnectedLogin extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { attemptLogin, attemptLoginFailureEnd }) (ConnectedLogin);
+export default connect(mapStateToProps, { 
+  attemptLogin, 
+  attemptLoginFailureEnd 
+}) (ConnectedLogin);

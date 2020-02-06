@@ -1,4 +1,11 @@
-import { ATTEMPT_LOGIN, DO_LOGOUT, REGISTER_SUCCESS, ATTEMPT_LOGIN_FAILURE, ATTEMPT_LOGIN_FAILURE_END, REGISTER_FAILURE } from "../constants/index";
+import { 
+  ATTEMPT_LOGIN, 
+  ATTEMPT_LOGIN_FAILURE, 
+  ATTEMPT_LOGIN_FAILURE_END, 
+  DO_LOGOUT,
+  REGISTER_SUCCESS, 
+  REGISTER_FAILURE 
+} from '../constants';
 
 const authUser = JSON.parse(localStorage.getItem('authUser'));
 

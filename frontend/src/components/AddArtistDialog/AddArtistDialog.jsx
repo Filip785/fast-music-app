@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { toggleAddArtistDialog, createArtist } from '../../state/actions/index';
-import { Button, TextField } from '@material-ui/core';
+import { 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogContentText, 
+  DialogTitle, 
+  Button, 
+  TextField 
+} from '@material-ui/core';
+import { toggleAddArtistDialog, createArtist } from '../../state/actions';
 
 const mapStateToProps = state => ({
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
@@ -61,4 +64,7 @@ class ConnectedAddArtistDialog extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { toggleAddArtistDialog, createArtist }) (ConnectedAddArtistDialog);
+export default connect(mapStateToProps, { 
+  toggleAddArtistDialog, 
+  createArtist 
+}) (ConnectedAddArtistDialog);

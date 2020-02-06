@@ -1,6 +1,12 @@
-import { GET_ALL_ARTISTS, DO_LOGOUT, TOGGLE_ADD_ARTIST_DIALOG, CREATE_ARTIST, ADD_ARTIST_FAILURE } from "../constants";
 import axios from 'axios';
 import history from '../../helpers/history';
+import { 
+  GET_ALL_ARTISTS, 
+  DO_LOGOUT, 
+  TOGGLE_ADD_ARTIST_DIALOG, 
+  CREATE_ARTIST, 
+  ADD_ARTIST_FAILURE 
+} from '../constants';
 
 export function getArtists(userApiToken) {
   return dispatch => {

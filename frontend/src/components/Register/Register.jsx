@@ -1,7 +1,13 @@
 import React from 'react';
-import { Paper, Grid, TextField, Button, Container } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { attemptRegister } from '../../state/actions/index'; 
+import { 
+  Paper, 
+  Grid, 
+  TextField, 
+  Button, 
+  Container 
+} from '@material-ui/core';
+import { attemptRegister } from '../../state/actions'; 
 
 const mapStateToProps = state => ({
   errors: state.authReducer.registerErrors
@@ -77,4 +83,6 @@ class ConnectedRegister extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { attemptRegister }) (ConnectedRegister);
+export default connect(mapStateToProps, { 
+  attemptRegister 
+}) (ConnectedRegister);
