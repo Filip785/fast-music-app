@@ -10,7 +10,7 @@ import {
 const authUser = JSON.parse(localStorage.getItem('authUser'));
 
 const initialState = {
-  user: authUser ? { loggedIn: true, authUser } : {},
+  user: authUser ? { loggedIn: { fromAuth: false }, authUser } : { loggedIn: false },
   registered: false,
   loginError: false,
   registerErrors: {}
@@ -18,7 +18,7 @@ const initialState = {
 
 export default function auth(state = initialState, action) {
   if(action.type === ATTEMPT_LOGIN) {
-    return { ...state, user: { loggedIn: true, authUser: action.payload } };
+    return { ...state, user: { loggedIn: { fromAuth: true }, authUser: action.payload } };
   }
 
   if(action.type === ATTEMPT_LOGIN_FAILURE) {
@@ -38,7 +38,7 @@ export default function auth(state = initialState, action) {
   }
 
   if(action.type === DO_LOGOUT) {
-    return { ...state, user: {} };
+    return { ...state, user: { loggedIn: false } };
   }
 
   return state;
