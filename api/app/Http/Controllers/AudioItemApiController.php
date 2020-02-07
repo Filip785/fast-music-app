@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AudioItem;
+use App\AudioItemUser;
 use App\Http\Requests\AddEditAudioItem;
 use App\User;
 use Illuminate\Http\Request;
@@ -215,6 +216,20 @@ class AudioItemApiController extends Controller
 					'name' => $uploader->name
 				]
 			]
+		], 200);
+	}
+
+	public function like(Request $request) {
+		$data = $request->all();
+
+		$audioItemUser = AudioItemUser::where(['audio_item_id' => $data['audioItemId'], 'user_id' => $data['userId']])->first();
+		$audioItemUser->like = 1;
+		$audioItemUser->save();
+
+		$count = AudioItemUser::where(['audio_item_id' => $data['audioItemId'], 'like' => 1])->count();
+
+		return response()->json([
+			'like' => $count
 		], 200);
 	}
 }
