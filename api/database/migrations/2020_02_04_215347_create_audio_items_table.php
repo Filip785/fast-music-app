@@ -18,6 +18,7 @@ class CreateAudioItemsTable extends Migration
 			$table->string('songTitle');
 			$table->unsignedBigInteger('artistId');
 			$table->unsignedBigInteger('uploaderId');
+			$table->integer('visibility');
 			$table->string('audioUrl');
 			$table->timestamps();
 

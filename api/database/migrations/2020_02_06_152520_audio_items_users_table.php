@@ -14,6 +14,7 @@ class AudioItemsUsersTable extends Migration
 	public function up()
 	{
 		Schema::create('audio_item_user', function (Blueprint $table) {
+			$table->bigIncrements('id');
 			$table->unsignedBigInteger('audio_item_id')->unsigned()->nullable();
 			$table->foreign('audio_item_id')->references('id')
 				->on('audio_items')->onDelete('cascade');

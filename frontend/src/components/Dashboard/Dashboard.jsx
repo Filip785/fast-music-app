@@ -87,7 +87,7 @@ class ConnectedDashboard extends React.Component {
                         Your browser does not support the audio element.
                       </audio>
                       <div style={{marginTop: '20px'}}>
-                        { (el.uploader.id === user.id) && <div style={{textAlign: 'center'}}><Link to={`/edit-item/${el.id}`}>Edit item</Link></div> }Uploaded by <strong>{el.uploader.name}</strong>
+                        { (el.uploader.id === user.id) && <div style={{textAlign: 'center'}}><Link to={`/edit-audio-item/${el.id}`}>Edit item</Link></div> }Uploaded by <strong>{el.uploader.name}</strong>
                       </div>
                     </ListItem>
                   </List>

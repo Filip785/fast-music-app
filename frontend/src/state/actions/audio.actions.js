@@ -11,7 +11,8 @@ import {
   ADD_AUDIO_ITEM_CLEANUP,
   TOGGLE_LOADING_SPINNER,
   DASHBOARD_CLEANUP,
-  GET_SPECIFIC_USERS
+  GET_SPECIFIC_USERS,
+  GET_AUDIO_ITEM
 } from '../constants';
 
 export function toggleItem(id) {
@@ -39,9 +40,9 @@ export function getAllAudioItems(userId, userApiToken) {
   };
 }
 
-export function addAudioItem(songTitle, artistId, { fileName, fileUpload }, uploaderId, visibility, allowedUsers, userApiToken) {
+export function addOrEditAudioItem(requestData, songTitle, artistId, { fileName, fileUpload }, uploaderId, visibility, allowedUsers, userApiToken) {
   return dispatch => {
-    return axios.post('http://localhost/api/audio/create', {
+    return axios[requestData.method](`http://localhost/api/audio${requestData.action}`, {
       songTitle,
       artistId,
       fileName,
@@ -115,6 +116,30 @@ export function getSpecificUsers(exceptUserId, userApiToken) {
       dispatch({ type: GET_SPECIFIC_USERS, payload: response.data.specificUsers });
     }).catch(_ => {
       performFrontendLogout(dispatch, history);
+    });
+  };
+}
+
+export function getAudioItem(authUserId, audioItemId, userApiToken) {
+  return dispatch => {
+    return axios.get(`http://localhost/api/audio/details/${audioItemId}`, {
+      headers: {
+        Authorization: `Bearer ${userApiToken}`
+      },
+      params: {
+        authUserId
+      }
+    }).then(response => {
+      dispatch({ type: GET_AUDIO_ITEM, payload: response.data.audioItem });
+    }).catch(error => {
+      if(error.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
+      }
+
+      if(error.response.status === 403) {
+        history.push('/dashboard', { withSpinner: true });
+        return Promise.reject(error);
+      }
     });
   };
 }

@@ -8,7 +8,8 @@ import {
   ADD_AUDIO_ITEM_FAILURE, 
   ADD_AUDIO_ITEM_CLEANUP,
   DASHBOARD_CLEANUP,
-  GET_SPECIFIC_USERS
+  GET_SPECIFIC_USERS,
+  GET_AUDIO_ITEM
 } from '../constants';
 
 const initialState = {
@@ -16,7 +17,8 @@ const initialState = {
   musicFile: {},
   musicItemError: {},
   fileExtensionNotAllowed: false,
-  specificUsers: []
+  specificUsers: [],
+  musicItem: {}
 };
 
 export default function audio(state = initialState, action) {
@@ -30,6 +32,10 @@ export default function audio(state = initialState, action) {
 
   if (action.type === ADD_AUDIO_ITEM) {
     return { ...state, musicItems: state.musicItems.concat(action.payload) };
+  }
+
+  if (action.type === GET_AUDIO_ITEM) {
+    return { ...state, musicItem: action.payload, musicFile: { name: action.payload.audioUrl } };
   }
 
   if (action.type === ADD_AUDIO_ITEM_FAILURE) {
@@ -56,7 +62,7 @@ export default function audio(state = initialState, action) {
     return { ...state, specificUsers: action.payload };
   }
 
-  if(action.type === DASHBOARD_CLEANUP) {
+  if (action.type === DASHBOARD_CLEANUP) {
     return { ...state, musicItems: [] };
   }
 

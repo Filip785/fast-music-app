@@ -8,7 +8,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import PrivateRoute from './helpers/PrivateRoute';
 import PublicRoute from './helpers/PublicRoute';
 import history from './helpers/history';
-import AddAudioItem from './components/AddAudioItem/AddAudioItem';
+import AddEditAudioItem from './components/AddEditAudioItem/AddEditAudioItem';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { 
   withStyles, 
@@ -87,7 +87,8 @@ class ConnectedApp extends React.Component {
                 <PublicRoute loggedIn={loggedIn} component={Register} path="/register" />
                 
                 <PrivateRoute loggedIn={loggedIn} component={Dashboard} path="/dashboard" />
-                <PrivateRoute loggedIn={loggedIn} component={AddAudioItem} path="/add-audio-item" />
+                <PrivateRoute loggedIn={loggedIn} key="add-audio-item" component={AddEditAudioItem} additionalProps={{type: 'add'}} path="/add-audio-item" />
+                <PrivateRoute loggedIn={loggedIn} key="edit-audio-item" component={AddEditAudioItem} additionalProps={{type: 'edit'}} path="/edit-audio-item/:id" />
               </Switch>
             </div>
           </div>

@@ -27,4 +27,6 @@ Route::middleware('auth:api')->get('artist', 'ArtistApiController@index');
 Route::middleware('auth:api')->post('artist/create', 'ArtistApiController@create');
 
 Route::middleware('auth:api')->get('audio', 'AudioItemApiController@index');
-Route::middleware('auth:api')->post('audio/create', 'AudioItemApiController@create');
+Route::middleware('auth:api')->get('audio/details/{audioItemId}', 'AudioItemApiController@details');
+Route::middleware('auth:api')->post('audio/add', 'AudioItemApiController@add');
+Route::middleware('auth:api')->put('audio/edit/{audioItemId}', 'AudioItemApiController@edit');

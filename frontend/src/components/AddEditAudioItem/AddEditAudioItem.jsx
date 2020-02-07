@@ -22,10 +22,11 @@ import {
   toggleAddArtistDialog,
   toggleFileChange,
   closeFileNotAllowedPrompt,
-  addAudioItem,
+  addOrEditAudioItem,
   cleanupAddFilePage,
   toggleLoadSpinner,
-  getSpecificUsers
+  getSpecificUsers,
+  getAudioItem
 } from '../../state/actions';
 
 const mapStateToProps = state => ({
@@ -35,14 +36,18 @@ const mapStateToProps = state => ({
   musicFile: state.audioReducer.musicFile,
   musicItemError: state.audioReducer.musicItemError,
   fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed,
-  specificUsers: state.audioReducer.specificUsers
+  specificUsers: state.audioReducer.specificUsers,
+  musicItem: state.audioReducer.musicItem
 });
 
-class ConnectedAddAudioItem extends React.Component {
+class ConnectedAddEditAudioItem extends React.Component {
   constructor(props) {
     super(props);
 
+    const { type } = this.props;
+    
     this.state = {
+      dataLoaded: type === 'add' ? true : false,
       title: '',
       artistName: '',
       fileName: '',
@@ -51,6 +56,7 @@ class ConnectedAddAudioItem extends React.Component {
 
     this.selectedArtist = {};
     this.selectedUsers = [];
+    this.defaultUsers = [];
 
     this.handleAddEv = this.handleAdd.bind(this);
     this.handleChangeTitleEv = this.handleChangeTitle.bind(this);
@@ -64,8 +70,46 @@ class ConnectedAddAudioItem extends React.Component {
     this.handleAllowedUserEv = this.handleAllowedUser.bind(this);
   }
 
+  setupEditPage(musicItem) {
+    this.selectedArtist = musicItem.artist;
+    if(musicItem.visibility === 2) {
+      this.selectedUsers = musicItem.allowed_users.map(item => ({id: item.id, username: item.username}));
+      this.defaultUsers = this.selectedUsers;
+    }
+    this.setState({
+      dataLoaded: true,
+      title: musicItem.songTitle,
+      artistName: this.selectedArtist.artistName,
+      visibility: musicItem.visibility
+    });
+  }
+
   componentDidMount() {
-    this.props.getArtists(this.props.user.api_token);
+    const { type } = this.props;
+
+    if(type === 'edit') {
+      this.props.toggleLoadSpinner();
+    }
+    this.props.getArtists(this.props.user.api_token).then(() => {
+      if (type === 'edit') {
+        const { id } = this.props.match.params;
+
+        this.props.getAudioItem(this.props.user.id, id, this.props.user.api_token).then(() => {
+          const { musicItem } = this.props;
+
+          // specific users only
+          if(musicItem.visibility === 2) {
+            this.props.getSpecificUsers(this.props.user.id, this.props.user.api_token).then(() => {
+              this.setupEditPage(musicItem);
+              this.props.toggleLoadSpinner();
+            });
+          } else {
+            this.props.toggleLoadSpinner();
+            this.setupEditPage(musicItem);
+          }
+        }, () => {});
+      }
+    });    
   }
 
   componentWillUnmount() {
@@ -75,11 +119,21 @@ class ConnectedAddAudioItem extends React.Component {
 
   handleAdd() {
     const { title, visibility } = this.state;
-    const { musicFile } = this.props;
+    const { musicFile, type, musicItem } = this.props;
 
     this.props.toggleLoadSpinner();
 
-    this.props.addAudioItem(title, this.selectedArtist.id, {
+    let method = 'post';
+    let action = '/add';
+
+    if(type === 'edit') {
+      method = 'put';
+      action = `/edit/${musicItem.id}`;
+    }
+
+    this.props.addOrEditAudioItem({
+      method, action
+    }, title, this.selectedArtist.id, {
       fileName: musicFile.name,
       fileUpload: musicFile.fileUpload
     }, this.props.user.id, visibility, this.selectedUsers.map(x => x.id), this.props.user.api_token);
@@ -154,15 +208,15 @@ class ConnectedAddAudioItem extends React.Component {
   }
 
   render() {
-    const { title, artistName, visibility } = this.state;
-    const { artists, user, musicFile, fileExtensionNotAllowed, musicItemError, specificUsers } = this.props;
+    const { title, artistName, visibility, dataLoaded } = this.state;
+    const { artists, user, musicFile, fileExtensionNotAllowed, musicItemError, specificUsers, type } = this.props;
 
     return (
       <Container maxWidth="sm">
-        <Paper className="paperPadding">
+        {dataLoaded && <Paper className="paperPadding">
           <div>
             <Grid container spacing={8} justify="center">
-              <h1>Add new song</h1>
+              <h1>{type === 'add' ? ('Add new song') : ('Edit this song')}</h1>
             </Grid>
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
@@ -189,7 +243,7 @@ class ConnectedAddAudioItem extends React.Component {
                 <Button color="primary" onClick={this.handleToggleDialogEv}>Add New Artist</Button>
               </Grid>
             </Grid>
-            <Grid container spacing={8} alignItems="flex-end">
+            {type !== 'edit' && <Grid container spacing={8} alignItems="flex-end">
               <Grid container alignItems="flex-start" direction="column" item md={true} sm={true} xs={true}>
                 <Fragment>
                   <input
@@ -221,7 +275,7 @@ class ConnectedAddAudioItem extends React.Component {
                   </Paper>
                 </div>}
               </Grid>
-            </Grid>
+            </Grid>}
 
             <Grid container spacing={8} alignItems="flex-end">
               <Grid item md={true} sm={true} xs={true}>
@@ -256,6 +310,7 @@ class ConnectedAddAudioItem extends React.Component {
                   options={specificUsers}
                   getOptionLabel={user => user.username}
                   onChange={this.handleAllowedUserEv}
+                  defaultValue={type === 'add' ? [] : this.defaultUsers}
                   renderInput={params => (
                     <TextField 
                       {...params}
@@ -271,10 +326,12 @@ class ConnectedAddAudioItem extends React.Component {
             </Grid>
 
             <Grid container justify="center" style={{ marginTop: '25px' }}>
-              <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleAddEv}>Add</Button>
+              <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleAddEv}>
+                {type === 'add' ? ('Add') : ('Edit')}
+              </Button>
             </Grid>
           </div>
-        </Paper>
+        </Paper>}
 
         <AddArtistDialog handleToggleDialogEv={this.handleToggleDialogEv} handleChangeArtistNameEv={this.handleChangeArtistNameEv} artistName={artistName} userApiToken={user.api_token} onBlurAddItemForm={this.handleBlurArtistNameEv} />
         <Snackbar open={fileExtensionNotAllowed} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPromptEv}>
@@ -292,8 +349,9 @@ export default connect(mapStateToProps, {
   toggleAddArtistDialog,
   toggleFileChange,
   closeFileNotAllowedPrompt,
-  addAudioItem,
+  addOrEditAudioItem,
   cleanupAddFilePage,
   toggleLoadSpinner,
-  getSpecificUsers
-}) (ConnectedAddAudioItem);
+  getSpecificUsers,
+  getAudioItem
+}) (ConnectedAddEditAudioItem);
