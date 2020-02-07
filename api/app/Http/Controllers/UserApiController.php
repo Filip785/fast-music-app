@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AudioItem;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,12 @@ class UserApiController extends Controller
 		]);
 		$user->api_token = Str::random(60);
 		$user->save();
+
+		$publicAudioItems = AudioItem::where('visibility', '=', 0)->get();
+
+		foreach($publicAudioItems as $publicAudioItem) {
+			$publicAudioItem->allowedUsers()->attach($user);
+		}
 
 		return response()->json([
 			'user' => $user
