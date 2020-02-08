@@ -10,7 +10,10 @@ import {
   DASHBOARD_CLEANUP,
   GET_SPECIFIC_USERS,
   GET_AUDIO_ITEM,
-  LIKE_ITEM
+  LIKE_ITEM,
+  GET_AUDIO_ITEMS_FOR_ARTISTS,
+  TOGGLE_ITEM_ARTIST_SONGS,
+  LIKE_ITEM_ARTISTS
 } from '../constants';
 
 const initialState = {
@@ -19,7 +22,8 @@ const initialState = {
   musicItemError: {},
   fileExtensionNotAllowed: false,
   specificUsers: [],
-  musicItem: {}
+  musicItem: {},
+  artistAudioItems: []
 };
 
 export default function audio(state = initialState, action) {
@@ -72,6 +76,45 @@ export default function audio(state = initialState, action) {
       ...state, 
       musicItems: state.musicItems.map(item => item.id === action.audioId ? { ...item, likes: action.payload, isLikedByUser: !item.isLikedByUser } : item) 
     };
+  }
+
+  if (action.type === LIKE_ITEM_ARTISTS) {
+    const artistId = action.artistId;
+    const audioId = action.audioId;
+    const artistAudioItems = state.artistAudioItems.map(item => {
+      if(item.id !== artistId) {
+        return item;
+      }
+
+      const audioItems = item.audioItems.map(audioItem => {
+        if(audioItem.id !== audioId) {
+          return audioItem;
+        }
+
+        return {
+          ...audioItem,
+          likes: action.likes
+        };
+      });
+
+      return {
+        ...item,
+        audioItems: audioItems
+      };
+    });
+
+    return {
+      ...state,
+      artistAudioItems: artistAudioItems
+    };
+  }
+
+  if(action.type === GET_AUDIO_ITEMS_FOR_ARTISTS) {
+    return { ...state, artistAudioItems: action.payload };
+  }
+
+  if (action.type === TOGGLE_ITEM_ARTIST_SONGS) {
+    return { ...state, artistAudioItems: state.artistAudioItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) };
   }
 
   return state;

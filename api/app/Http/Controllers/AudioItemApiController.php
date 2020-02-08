@@ -241,4 +241,41 @@ class AudioItemApiController extends Controller
 			'count' => $count
 		], 200);
 	}
+
+	public function getAudioItemsForArtist($userId) {
+		$user = User::find($userId);
+
+		$accessibleItems = $user->accessibleItems()->with(['uploader'])->get();
+
+		$artists = [];
+
+		foreach($accessibleItems as $k => $audioItem) {
+			$artist = $audioItem->artist;
+			if(! isset($artists[$artist->id])) {
+				$artists[$artist->id] = ['id' => $artist->id, 'toggle' => false, 'artistName' => $artist->artistName, 'audioItems' => []];
+			}
+
+			$audioUploader = $audioItem->uploader;
+
+			$uploader = [
+				'id' => $audioUploader->id,
+				'name' => $audioUploader->name
+			];
+
+			$artists[$artist->id]['audioItems'][] = [
+				'id' => $audioItem->id,
+				'songTitle' => $audioItem->songTitle,
+				'isLikedByUser' => count(AudioItemUser::where(['audio_item_id' => $audioItem->id, 'user_id' => $userId, 'like' => 1])->get()) !== 0,
+				'likes' => AudioItemUser::where(['audio_item_id' => $audioItem->id, 'like' => 1])->count(),
+				'url' => $audioItem->audioUrl,
+				'uploader' => $uploader,
+			];
+		}
+
+		$artists = array_values($artists);
+
+		return response()->json([
+			'artistAudioItems' =>	$artists
+		], 200);
+	}
 }

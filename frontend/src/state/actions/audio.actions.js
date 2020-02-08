@@ -13,7 +13,10 @@ import {
   DASHBOARD_CLEANUP,
   GET_SPECIFIC_USERS,
   GET_AUDIO_ITEM,
-  LIKE_ITEM
+  LIKE_ITEM,
+  GET_AUDIO_ITEMS_FOR_ARTISTS,
+  TOGGLE_ITEM_ARTIST_SONGS,
+  LIKE_ITEM_ARTISTS
 } from '../constants';
 
 export function toggleItem(id) {
@@ -145,7 +148,7 @@ export function getAudioItem(authUserId, audioItemId, userApiToken) {
   };
 }
 
-export function doLike(audioItemId, userId, userApiToken) {
+export function doLike(audioItemId, userId, userApiToken, isArtists, artistId) {
   return dispatch => {
     return axios.post(`http://localhost/api/audio/like`, {
       audioItemId,
@@ -155,7 +158,12 @@ export function doLike(audioItemId, userId, userApiToken) {
         Authorization: `Bearer ${userApiToken}`
       }
     }).then(response => {
-      dispatch({ type: LIKE_ITEM, payload: response.data.count, audioId: audioItemId });
+      if(isArtists) {
+        dispatch({ type: LIKE_ITEM_ARTISTS, likes: response.data.count, audioId: audioItemId, artistId: artistId });
+      } else {
+        dispatch({ type: LIKE_ITEM, payload: response.data.count, audioId: audioItemId });
+      }
+      
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
       if (error.response.status === 401) {
@@ -164,5 +172,32 @@ export function doLike(audioItemId, userId, userApiToken) {
         return;
       }
     });
+  };
+}
+
+export function getAudioItemsForArtists(userId, userApiToken) {
+  return dispatch => {
+    return axios.get(`http://localhost/api/audio/artist-audio-items/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${userApiToken}`
+      }
+    }).then(response => {
+      dispatch({ type: GET_AUDIO_ITEMS_FOR_ARTISTS, payload: response.data.artistAudioItems });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
+    }).catch(error => {
+      //here
+      if (error.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
+
+        return;
+      }
+    });
+  };
+}
+
+export function toggleItemArtistSongs (value) {
+  return {
+    type: TOGGLE_ITEM_ARTIST_SONGS,
+    payload: value
   };
 }

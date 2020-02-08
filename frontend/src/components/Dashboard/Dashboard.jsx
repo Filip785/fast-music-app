@@ -16,6 +16,7 @@ import {
 import { toggleItem, getAllAudioItems, toggleLoadSpinner, cleanupDashboardPage, doLike } from '../../state/actions';
 import history from '../../helpers/history';
 import { Link } from 'react-router-dom';
+import SortByArtist from './SortByArtist/SortByArtist';
 
 const mapStateToProps = state => ({
   musicItems: state.audioReducer.musicItems,
@@ -36,6 +37,10 @@ class ConnectedDashboard extends React.Component {
   }
 
   componentDidMount() {
+    this.loadInitialData();
+  }
+
+  loadInitialData() {
     if (!this.props.location.state) {
       this.props.toggleLoadSpinner();
     } else {
@@ -51,6 +56,11 @@ class ConnectedDashboard extends React.Component {
   }
 
   handleChange(_, newValue) {
+    if(newValue === 1) {
+      this.props.toggleLoadSpinner();
+    } else {
+      this.loadInitialData();
+    }
     this.setState({ value: newValue });
   }
 
@@ -58,9 +68,9 @@ class ConnectedDashboard extends React.Component {
     this.props.toggleItem(value);
   }
 
-  handleLike(audioItemId) {
+  handleLike(audioItemId, artistId, isArtists) {
     this.props.toggleLoadSpinner();
-    this.props.doLike(audioItemId, this.props.user.id, this.props.user.api_token);
+    this.props.doLike(audioItemId, this.props.user.id, this.props.user.api_token, isArtists, artistId);
   }
 
   render() {
@@ -71,7 +81,7 @@ class ConnectedDashboard extends React.Component {
       <Container>
         <AppBar position="static">
           <Tabs value={value} onChange={this.handleChangeEv} aria-label="simple tabs">
-            <Tab label="SORT BY SONG NAME" id="simple-tab-0" />
+            <Tab label="ALL SONGS" id="simple-tab-0" />
             <Tab label="SORT BY ARTIST NAME" id="simple-tab-1" />
           </Tabs>
         </AppBar>
@@ -116,7 +126,7 @@ class ConnectedDashboard extends React.Component {
           </List>
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Sort by artist name
+          <SortByArtist handleLikeEv={this.handleLikeEv} />
         </TabPanel>
       </Container>
     );
