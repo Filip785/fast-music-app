@@ -24,12 +24,16 @@ class AudioItemApiController extends Controller
 
 		foreach($audioItems as $k => $audioItem) {
 			$uploader = $audioItem->uploader;
+			$isLikedByUser = count(AudioItemUser::where(['audio_item_id' => $audioItem->id, 'user_id' => $currentUser->id, 'like' => 1])->get()) !== 0;
+			$likeCount = AudioItemUser::where(['audio_item_id' => $audioItem->id, 'like' => 1])->count();
 
 			$audioItemsReturn[$k] = [
 				'id' => $audioItem->id,
 				'toggle' => false,
 				'songTitle' => $audioItem->songTitle,
 				'artistName' => $audioItem->artist->artistName,
+				'isLikedByUser' => $isLikedByUser,
+				'likes' => $likeCount,
 				'url' => $audioItem->audioUrl,
 				'uploader' => [
 					'id' => $uploader->id,
@@ -223,13 +227,18 @@ class AudioItemApiController extends Controller
 		$data = $request->all();
 
 		$audioItemUser = AudioItemUser::where(['audio_item_id' => $data['audioItemId'], 'user_id' => $data['userId']])->first();
-		$audioItemUser->like = 1;
+		if($audioItemUser->like === 0) {
+			$audioItemUser->like = 1;
+		} else {
+			$audioItemUser->like = 0;
+		}
+
 		$audioItemUser->save();
 
 		$count = AudioItemUser::where(['audio_item_id' => $data['audioItemId'], 'like' => 1])->count();
 
 		return response()->json([
-			'like' => $count
+			'count' => $count
 		], 200);
 	}
 }

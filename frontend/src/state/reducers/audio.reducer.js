@@ -9,7 +9,8 @@ import {
   ADD_AUDIO_ITEM_CLEANUP,
   DASHBOARD_CLEANUP,
   GET_SPECIFIC_USERS,
-  GET_AUDIO_ITEM
+  GET_AUDIO_ITEM,
+  LIKE_ITEM
 } from '../constants';
 
 const initialState = {
@@ -55,7 +56,7 @@ export default function audio(state = initialState, action) {
   }
 
   if (action.type === FILE_EXTENSION_FORBIDDEN_END) {
-    return { ...state, fileExtensionNotAllowed: false }
+    return { ...state, fileExtensionNotAllowed: false };
   }
 
   if (action.type === GET_SPECIFIC_USERS) {
@@ -64,6 +65,13 @@ export default function audio(state = initialState, action) {
 
   if (action.type === DASHBOARD_CLEANUP) {
     return { ...state, musicItems: [] };
+  }
+
+  if (action.type === LIKE_ITEM) {
+    return { 
+      ...state, 
+      musicItems: state.musicItems.map(item => item.id === action.audioId ? { ...item, likes: action.payload, isLikedByUser: !item.isLikedByUser } : item) 
+    };
   }
 
   return state;

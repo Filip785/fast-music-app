@@ -12,7 +12,8 @@ import {
   TOGGLE_LOADING_SPINNER,
   DASHBOARD_CLEANUP,
   GET_SPECIFIC_USERS,
-  GET_AUDIO_ITEM
+  GET_AUDIO_ITEM,
+  LIKE_ITEM
 } from '../constants';
 
 export function toggleItem(id) {
@@ -139,6 +140,28 @@ export function getAudioItem(authUserId, audioItemId, userApiToken) {
       if(error.response.status === 403) {
         history.push('/dashboard', { withSpinner: true });
         return Promise.reject(error);
+      }
+    });
+  };
+}
+
+export function doLike(audioItemId, userId, userApiToken) {
+  return dispatch => {
+    return axios.post(`http://localhost/api/audio/like`, {
+      audioItemId,
+      userId
+    }, {
+      headers: {
+        Authorization: `Bearer ${userApiToken}`
+      }
+    }).then(response => {
+      dispatch({ type: LIKE_ITEM, payload: response.data.count, audioId: audioItemId });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
+    }).catch(error => {
+      if (error.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
+
+        return;
       }
     });
   };

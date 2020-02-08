@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import TabPanel from '../helpers/TabPanel';
-import { ExpandLess, ExpandMore, ThumbUp } from '@material-ui/icons';
+import { ExpandLess, ExpandMore, ThumbUp, ThumbDown } from '@material-ui/icons';
 import {
   Container,
   Button,
@@ -13,7 +13,7 @@ import {
   ListItemText,
   Collapse
 } from '@material-ui/core';
-import { toggleItem, getAllAudioItems, toggleLoadSpinner, cleanupDashboardPage } from '../../state/actions';
+import { toggleItem, getAllAudioItems, toggleLoadSpinner, cleanupDashboardPage, doLike } from '../../state/actions';
 import history from '../../helpers/history';
 import { Link } from 'react-router-dom';
 
@@ -58,8 +58,9 @@ class ConnectedDashboard extends React.Component {
     this.props.toggleItem(value);
   }
 
-  handleLike() {
-    alert('liking!');
+  handleLike(audioItemId) {
+    this.props.toggleLoadSpinner();
+    this.props.doLike(audioItemId, this.props.user.id, this.props.user.api_token);
   }
 
   render() {
@@ -88,23 +89,24 @@ class ConnectedDashboard extends React.Component {
                 <Collapse in={el.toggle} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     <ListItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                      <Button
+                      {(user.id !== el.uploader.id) && <Button
                         variant="contained"
                         component="span"
                         size="large"
                         color="primary"
                         style={{marginBottom: '20px'}}
-                        onClick={this.handleLikeEv}
+                        onClick={() => this.handleLikeEv(el.id)}
                       >
-                        <ThumbUp />
-                        <span style={{ paddingLeft: '10px' }}>Like this song</span>
-                      </Button>
+                        {!el.isLikedByUser ? <ThumbUp /> : <ThumbDown />}
+                        <span style={{ paddingLeft: '10px' }}>{!el.isLikedByUser ? ('Like this song') : ('Unlike this song')}</span>
+                      </Button>}
+                      <h3>Likes: {el.likes}</h3>
                       <audio controls style={{ width: '100%' }}>
                         <source src={el.url} />
                         Your browser does not support the audio element.
                       </audio>
                       <div style={{ marginTop: '20px' }}>
-                        {(el.uploader.id === user.id) && <div style={{ textAlign: 'center' }}><Link to={`/edit-audio-item/${el.id}`}>Edit item</Link></div>}Uploaded by <strong>{el.uploader.name}</strong>
+                        {(el.uploader.id === user.id) && <div><Link to={`/edit-audio-item/${el.id}`}>Edit item</Link></div>}Uploaded by <strong>{el.uploader.name}</strong>
                       </div>
                     </ListItem>
                   </List>
@@ -125,5 +127,6 @@ export default connect(mapStateToProps, {
   toggleItem,
   getAllAudioItems,
   toggleLoadSpinner,
-  cleanupDashboardPage
+  cleanupDashboardPage,
+  doLike
 })(ConnectedDashboard);
