@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import TabPanel from '../helpers/TabPanel';
-import { ExpandLess, ExpandMore, ThumbUp, ThumbDown } from '@material-ui/icons';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import {
   Container,
-  Button,
   AppBar,
   Tabs,
   Tab,
@@ -15,8 +14,9 @@ import {
 } from '@material-ui/core';
 import { toggleItem, getAllAudioItems, toggleLoadSpinner, cleanupDashboardPage, doLike } from '../../state/actions';
 import history from '../../helpers/history';
-import { Link } from 'react-router-dom';
 import SortByArtist from './SortByArtist/SortByArtist';
+import LikeItem from './LikeItem/LikeItem';
+import EditDelete from './EditDelete/EditDelete';
 
 const mapStateToProps = state => ({
   musicItems: state.audioReducer.musicItems,
@@ -31,7 +31,6 @@ class ConnectedDashboard extends React.Component {
       value: 0
     };
 
-    this.handleLikeEv = this.handleLike.bind(this);
     this.handleExpandEv = this.handleExpand.bind(this);
     this.handleChangeEv = this.handleChange.bind(this);
   }
@@ -68,11 +67,6 @@ class ConnectedDashboard extends React.Component {
     this.props.toggleItem(value);
   }
 
-  handleLike(audioItemId, artistId, isArtists) {
-    this.props.toggleLoadSpinner();
-    this.props.doLike(audioItemId, this.props.user.id, this.props.user.api_token, isArtists, artistId);
-  }
-
   render() {
     const { musicItems, user } = this.props;
     const { value } = this.state;
@@ -99,24 +93,15 @@ class ConnectedDashboard extends React.Component {
                 <Collapse in={el.toggle} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     <ListItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                      {(user.id !== el.uploader.id) && <Button
-                        variant="contained"
-                        component="span"
-                        size="large"
-                        color="primary"
-                        style={{marginBottom: '20px'}}
-                        onClick={() => this.handleLikeEv(el.id)}
-                      >
-                        {!el.isLikedByUser ? <ThumbUp /> : <ThumbDown />}
-                        <span style={{ paddingLeft: '10px' }}>{!el.isLikedByUser ? ('Like this song') : ('Unlike this song')}</span>
-                      </Button>}
-                      <h3>Likes: {el.likes}</h3>
+                      <LikeItem numLikes={el.likes} userApiToken={user.api_token} audioItemId={el.id} userId={user.id} uploaderId={el.uploader.id} isLikedByUser={el.isLikedByUser} />
+
                       <audio controls style={{ width: '100%' }}>
                         <source src={el.url} />
                         Your browser does not support the audio element.
                       </audio>
                       <div style={{ marginTop: '20px' }}>
-                        {(el.uploader.id === user.id) && <div><Link to={`/edit-audio-item/${el.id}`}>Edit item</Link></div>}Uploaded by <strong>{el.uploader.name}</strong>
+                        {(el.uploader.id === user.id) && <EditDelete audioId={el.id} userId={user.id} userApiToken={user.api_token} />}
+                        Uploaded by <strong>{el.uploader.name}</strong>
                       </div>
                     </ListItem>
                   </List>
@@ -126,7 +111,7 @@ class ConnectedDashboard extends React.Component {
           </List>
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <SortByArtist handleLikeEv={this.handleLikeEv} />
+          <SortByArtist />
         </TabPanel>
       </Container>
     );

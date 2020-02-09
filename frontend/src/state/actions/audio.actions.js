@@ -16,7 +16,9 @@ import {
   LIKE_ITEM,
   GET_AUDIO_ITEMS_FOR_ARTISTS,
   TOGGLE_ITEM_ARTIST_SONGS,
-  LIKE_ITEM_ARTISTS
+  LIKE_ITEM_ARTISTS,
+  DELETE_AUDIO,
+  DELETE_AUDIO_ARTISTS
 } from '../constants';
 
 export function toggleItem(id) {
@@ -188,8 +190,35 @@ export function getAudioItemsForArtists(userId, userApiToken) {
       //here
       if (error.response.status === 401) {
         performFrontendLogout(dispatch, history, true);
+      }
+    });
+  };
+}
+
+export function deleteAudio(audioId, userId, userApiToken, isArtists, artistId) {
+  return dispatch => {
+    return axios.delete(`http://localhost/api/audio/delete/${audioId}`, {
+      headers: {
+        Authorization: `Bearer ${userApiToken}`
+      },
+      data: { userId }
+    }).then(_ => {
+      if(isArtists) {
+        dispatch({ type: DELETE_AUDIO_ARTISTS, audioId, artistId });
+      } else {
+        dispatch({ type: DELETE_AUDIO, payload: audioId });
+      }
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
+    }).catch(error => {
+      //here
+      if (error.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
 
         return;
+      }
+
+      if(error.response.status === 403) {
+        history.push('/dashboard', { withSpinner: true });
       }
     });
   };

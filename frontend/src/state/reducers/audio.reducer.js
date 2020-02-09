@@ -13,7 +13,9 @@ import {
   LIKE_ITEM,
   GET_AUDIO_ITEMS_FOR_ARTISTS,
   TOGGLE_ITEM_ARTIST_SONGS,
-  LIKE_ITEM_ARTISTS
+  LIKE_ITEM_ARTISTS,
+  DELETE_AUDIO,
+  DELETE_AUDIO_ARTISTS
 } from '../constants';
 
 const initialState = {
@@ -79,8 +81,8 @@ export default function audio(state = initialState, action) {
   }
 
   if (action.type === LIKE_ITEM_ARTISTS) {
-    const artistId = action.artistId;
-    const audioId = action.audioId;
+    const { artistId, audioId } = action;
+
     const artistAudioItems = state.artistAudioItems.map(item => {
       if(item.id !== artistId) {
         return item;
@@ -93,29 +95,60 @@ export default function audio(state = initialState, action) {
 
         return {
           ...audioItem,
-          likes: action.likes
+          likes: action.likes,
+          isLikedByUser: !audioItem.isLikedByUser
         };
       });
 
       return {
         ...item,
-        audioItems: audioItems
+        audioItems
       };
     });
 
     return {
       ...state,
-      artistAudioItems: artistAudioItems
+      artistAudioItems
     };
   }
 
-  if(action.type === GET_AUDIO_ITEMS_FOR_ARTISTS) {
+  if (action.type === GET_AUDIO_ITEMS_FOR_ARTISTS) {
     return { ...state, artistAudioItems: action.payload };
   }
 
   if (action.type === TOGGLE_ITEM_ARTIST_SONGS) {
     return { ...state, artistAudioItems: state.artistAudioItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) };
   }
+
+  if (action.type === DELETE_AUDIO) {
+    const indexToRemove = state.musicItems.findIndex(item => item.id === action.payload);
+
+    return {
+      ...state, 
+      musicItems: [...state.musicItems.slice(0, indexToRemove), ...state.musicItems.slice(indexToRemove + 1)]
+    };
+  }
+
+  if (action.type === DELETE_AUDIO_ARTISTS) {
+    const { artistId, audioId } = action;
+
+    const artistAudioItems = state.artistAudioItems.map(item => {
+      if(item.id !== artistId) {
+        return item;
+      }
+      
+      const indexToRemove = item.audioItems.findIndex(item => item.id === audioId);
+
+      const audioItems = [...item.audioItems.slice(0, indexToRemove), ...item.audioItems.slice(indexToRemove + 1)];
+
+      return {
+        ...item,
+        audioItems
+      };
+    });
+
+    return { ...state, artistAudioItems };
+  } 
 
   return state;
 }

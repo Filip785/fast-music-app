@@ -278,4 +278,21 @@ class AudioItemApiController extends Controller
 			'artistAudioItems' =>	$artists
 		], 200);
 	}
+
+	public function delete(Request $request, $audioItemId) {
+		$data = $request->all();
+
+		$audioItem = AudioItem::find($audioItemId);
+
+		if($data['userId'] !== $audioItem->uploader->id) {
+			return response()->json([
+				'unauthorized' => "You can't delete this file."
+			], 403);
+		}
+
+		AudioItemUser::where(['audio_item_id' => $audioItemId])->delete();
+		$audioItem->delete();
+
+		return response(null, 200);
+	}
 }

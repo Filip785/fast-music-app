@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { getAudioItemsForArtists, toggleItemArtistSongs } from '../../../state/actions';
-import { ListItem, ListItemText, Collapse, List, Button, Divider } from '@material-ui/core';
-import { ExpandLess, ExpandMore, ThumbUp, ThumbDown } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
+import { ListItem, ListItemText, Collapse, List, Divider } from '@material-ui/core';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import LikeItem from '../LikeItem/LikeItem';
+import EditDelete from '../EditDelete/EditDelete';
 
 const mapStateToProps = state => ({
   user: state.authReducer.user.authUser,
@@ -50,24 +51,24 @@ class ConnectedSortByArtist extends React.Component {
                 <ListItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   {el.audioItems.map(artistSong => (
                     <div key={artistSong.id} style={{width: '100%'}}>
-                      {(user.id !== artistSong.uploader.id) && <Button
-                        variant="contained"
-                        component="span"
-                        size="large"
-                        color="primary"
-                        style={{ marginBottom: '20px' }}
-                        onClick={() => this.props.handleLikeEv(artistSong.id, el.id, true)}
-                      >
-                        {!artistSong.isLikedByUser ? <ThumbUp /> : <ThumbDown />}
-                        <span style={{ paddingLeft: '10px' }}>{!artistSong.isLikedByUser ? ('Like this song') : ('Unlike this song')}</span>
-                      </Button>}
-                      <h3>Likes: {artistSong.likes}</h3>
-                      <audio controls style={{ width: '100%' }}>
-                        <source src={artistSong.url} />
-                        Your browser does not support the audio element.
-                    </audio>
-                      <div style={{ marginTop: '20px' }}>
-                        {(artistSong.uploader.id === user.id) && <div><Link to={`/edit-audio-item/${artistSong.id}`}>Edit item</Link></div>}Uploaded by <strong>{artistSong.uploader.name}</strong>
+                      <div style={{padding: '20px'}}>
+                        <h2>Song Name: {artistSong.songTitle}</h2>
+                        <LikeItem numLikes={artistSong.likes} 
+                                  userApiToken={user.api_token} 
+                                  audioItemId={artistSong.id} 
+                                  userId={user.id} 
+                                  uploaderId={artistSong.uploader.id} 
+                                  isLikedByUser={artistSong.isLikedByUser} 
+                                  artistId={el.id} 
+                          />
+                        <audio controls style={{ width: '100%' }}>
+                          <source src={artistSong.url} />
+                          Your browser does not support the audio element.
+                      </audio>
+                        <div style={{ marginTop: '20px' }}>
+                          {(artistSong.uploader.id === user.id) && <EditDelete audioId={artistSong.id} userId={user.id} userApiToken={user.api_token} isArtists={true} artistId={el.id} />}
+                          Uploaded by <strong>{artistSong.uploader.name}</strong>
+                        </div>
                       </div>
                       <Divider />
 
