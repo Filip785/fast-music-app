@@ -1,10 +1,10 @@
-import { 
-  ATTEMPT_LOGIN, 
-  ATTEMPT_LOGIN_FAILURE, 
-  ATTEMPT_LOGIN_FAILURE_END, 
+import {
+  ATTEMPT_LOGIN,
+  ATTEMPT_LOGIN_FAILURE,
+  ATTEMPT_LOGIN_FAILURE_END,
   DO_LOGOUT,
-  REGISTER_SUCCESS, 
-  REGISTER_FAILURE 
+  REGISTER_SUCCESS,
+  REGISTER_FAILURE
 } from '../constants';
 
 const authUser = JSON.parse(localStorage.getItem('authUser'));
@@ -17,27 +17,27 @@ const initialState = {
 };
 
 export default function auth(state = initialState, action) {
-  if(action.type === ATTEMPT_LOGIN) {
+  if (action.type === ATTEMPT_LOGIN) {
     return { ...state, user: { loggedIn: { fromAuth: true }, authUser: action.payload } };
   }
 
-  if(action.type === ATTEMPT_LOGIN_FAILURE) {
+  if (action.type === ATTEMPT_LOGIN_FAILURE) {
     return { ...state, loginError: true };
   }
 
-  if(action.type === ATTEMPT_LOGIN_FAILURE_END) {
+  if (action.type === ATTEMPT_LOGIN_FAILURE_END) {
     return { ...state, loginError: false };
   }
 
-  if(action.type === REGISTER_SUCCESS) {
+  if (action.type === REGISTER_SUCCESS) {
     return { ...state, registered: true };
   }
 
-  if(action.type === REGISTER_FAILURE) {
+  if (action.type === REGISTER_FAILURE) {
     return { ...state, registerErrors: action.payload };
   }
 
-  if(action.type === DO_LOGOUT) {
+  if (action.type === DO_LOGOUT) {
     return { ...state, user: { loggedIn: false } };
   }
 

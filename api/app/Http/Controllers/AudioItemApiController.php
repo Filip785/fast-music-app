@@ -6,6 +6,7 @@ use App\AudioItem;
 use App\AudioItemUser;
 use App\Http\Requests\AddEditAudioItem;
 use App\User;
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -173,14 +174,15 @@ class AudioItemApiController extends Controller
 	public function add(AddEditAudioItem $request)
 	{
 		$data = $request->all();
-
 		$fileUpload = file_get_contents($data['fileUpload']);
-		Storage::disk('public')->put('audio/'.$data['fileName'], $fileUpload);
+		$fileName = uniqid().'.'.File::extension($data['fileName']);
+
+		Storage::disk('public')->put('audio/'.$fileName, $fileUpload);
 
 		$audioItem = AudioItem::create([
 			'songTitle' => $data['songTitle'],
 			'artistId' => $data['artistId'],
-			'audioUrl' => asset('storage/audio/'.$data['fileName']),
+			'audioUrl' => asset('storage/audio/'.$fileName),
 			'uploaderId' => $data['uploaderId'],
 			'visibility' => $data['visibility']
 		]);
@@ -291,6 +293,7 @@ class AudioItemApiController extends Controller
 		}
 
 		AudioItemUser::where(['audio_item_id' => $audioItemId])->delete();
+    Storage::disk('public')->delete('audio/'.basename($audioItem->audioUrl));
 		$audioItem->delete();
 
 		return response(null, 200);

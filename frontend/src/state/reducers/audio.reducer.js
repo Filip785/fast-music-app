@@ -1,11 +1,11 @@
-import { 
-  TOGGLE_ITEM, 
-  TOGGLE_FILE_CHANGE, 
-  FILE_EXTENSION_FORBIDDEN, 
-  FILE_EXTENSION_FORBIDDEN_END, 
-  ADD_AUDIO_ITEM, 
-  GET_ALL_AUDIO_ITEMS, 
-  ADD_AUDIO_ITEM_FAILURE, 
+import {
+  TOGGLE_ITEM,
+  TOGGLE_FILE_CHANGE,
+  FILE_EXTENSION_FORBIDDEN,
+  FILE_EXTENSION_FORBIDDEN_END,
+  ADD_AUDIO_ITEM,
+  GET_ALL_AUDIO_ITEMS,
+  ADD_AUDIO_ITEM_FAILURE,
   ADD_AUDIO_ITEM_CLEANUP,
   DASHBOARD_CLEANUP,
   GET_SPECIFIC_USERS,
@@ -74,9 +74,9 @@ export default function audio(state = initialState, action) {
   }
 
   if (action.type === LIKE_ITEM) {
-    return { 
-      ...state, 
-      musicItems: state.musicItems.map(item => item.id === action.audioId ? { ...item, likes: action.payload, isLikedByUser: !item.isLikedByUser } : item) 
+    return {
+      ...state,
+      musicItems: state.musicItems.map(item => item.id === action.audioId ? { ...item, likes: action.payload, isLikedByUser: !item.isLikedByUser } : item)
     };
   }
 
@@ -84,12 +84,12 @@ export default function audio(state = initialState, action) {
     const { artistId, audioId } = action;
 
     const artistAudioItems = state.artistAudioItems.map(item => {
-      if(item.id !== artistId) {
+      if (item.id !== artistId) {
         return item;
       }
 
       const audioItems = item.audioItems.map(audioItem => {
-        if(audioItem.id !== audioId) {
+        if (audioItem.id !== audioId) {
           return audioItem;
         }
 
@@ -124,7 +124,7 @@ export default function audio(state = initialState, action) {
     const indexToRemove = state.musicItems.findIndex(item => item.id === action.payload);
 
     return {
-      ...state, 
+      ...state,
       musicItems: [...state.musicItems.slice(0, indexToRemove), ...state.musicItems.slice(indexToRemove + 1)]
     };
   }
@@ -132,11 +132,11 @@ export default function audio(state = initialState, action) {
   if (action.type === DELETE_AUDIO_ARTISTS) {
     const { artistId, audioId } = action;
 
-    const artistAudioItems = state.artistAudioItems.map(item => {
-      if(item.id !== artistId) {
+    let artistAudioItems = state.artistAudioItems.map(item => {
+      if (item.id !== artistId) {
         return item;
       }
-      
+
       const indexToRemove = item.audioItems.findIndex(item => item.id === audioId);
 
       const audioItems = [...item.audioItems.slice(0, indexToRemove), ...item.audioItems.slice(indexToRemove + 1)];
@@ -146,9 +146,13 @@ export default function audio(state = initialState, action) {
         audioItems
       };
     });
+    
+    // where length === 0
+    artistAudioItems = artistAudioItems.filter((item, index) => item.audioItems.length !== 0);
+
 
     return { ...state, artistAudioItems };
-  } 
+  }
 
   return state;
 }

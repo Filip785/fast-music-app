@@ -1,8 +1,8 @@
-import { 
-  GET_ALL_ARTISTS, 
-  TOGGLE_ADD_ARTIST_DIALOG, 
-  CREATE_ARTIST, 
-  ADD_ARTIST_FAILURE 
+import {
+  GET_ALL_ARTISTS,
+  TOGGLE_ADD_ARTIST_DIALOG,
+  CREATE_ARTIST,
+  ADD_ARTIST_FAILURE
 } from '../constants';
 
 const initialState = {
