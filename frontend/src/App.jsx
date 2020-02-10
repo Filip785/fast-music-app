@@ -19,6 +19,7 @@ import {
   CircularProgress
 } from '@material-ui/core';
 import { doLogout } from './state/actions';
+import Profile from './components/User/Profile';
 
 const styles = theme => ({
   root: {
@@ -89,6 +90,8 @@ class ConnectedApp extends React.Component {
                 <PrivateRoute loggedIn={loggedIn} component={Dashboard} path="/dashboard" />
                 <PrivateRoute loggedIn={loggedIn} key="add-audio-item" component={AddEditAudioItem} additionalProps={{type: 'add'}} path="/add-audio-item" />
                 <PrivateRoute loggedIn={loggedIn} key="edit-audio-item" component={AddEditAudioItem} additionalProps={{type: 'edit'}} path="/edit-audio-item/:id" />
+
+                <PrivateRoute loggedIn={loggedIn} component={Profile} path="/profile/:id" />
               </Switch>
             </div>
           </div>

@@ -10,6 +10,10 @@ class AudioItem extends Model
 		'songTitle', 'artistId', 'audioUrl', 'uploaderId', 'visibility'
 	];
 
+	protected $hidden = [
+	  'pivot'
+  ];
+
 	public function artist() {
 		return $this->hasOne('App\Artist', 'id', 'artistId');
 	}

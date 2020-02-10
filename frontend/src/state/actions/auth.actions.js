@@ -39,6 +39,7 @@ export function attemptRegister(name, username, email, password) {
       history.push('/login');
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
+      alert(JSON.stringify(error));
       dispatch({ type: REGISTER_FAILURE, payload: error.response.data.errors });
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     });

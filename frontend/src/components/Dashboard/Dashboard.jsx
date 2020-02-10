@@ -17,6 +17,7 @@ import history from '../../helpers/history';
 import SortByArtist from './SortByArtist/SortByArtist';
 import LikeItem from './LikeItem/LikeItem';
 import EditDelete from './EditDelete/EditDelete';
+import { Link } from 'react-router-dom';
 
 const mapStateToProps = state => ({
   musicItems: state.audioReducer.musicItems,
@@ -101,7 +102,7 @@ class ConnectedDashboard extends React.Component {
                       </audio>
                       <div style={{ marginTop: '20px' }}>
                         {(el.uploader.id === user.id) && <EditDelete audioId={el.id} userId={user.id} userApiToken={user.api_token} />}
-                        Uploaded by <strong>{el.uploader.name}</strong>
+                        Uploaded by <Link to={`/profile/${el.uploader.id}`}><strong>{el.uploader.name}</strong></Link>
                       </div>
                     </ListItem>
                   </List>

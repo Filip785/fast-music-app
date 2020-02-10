@@ -15,7 +15,8 @@ import {
   TOGGLE_ITEM_ARTIST_SONGS,
   LIKE_ITEM_ARTISTS,
   DELETE_AUDIO,
-  DELETE_AUDIO_ARTISTS
+  DELETE_AUDIO_ARTISTS,
+  GET_PROFILE_DATA
 } from '../constants';
 
 const initialState = {
@@ -25,12 +26,13 @@ const initialState = {
   fileExtensionNotAllowed: false,
   specificUsers: [],
   musicItem: {},
-  artistAudioItems: []
+  artistAudioItems: [],
+  profile: {profileData: {}, accessibleItems: []}
 };
 
 export default function audio(state = initialState, action) {
   if (action.type === TOGGLE_ITEM) {
-    return { ...state, musicItems: state.musicItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) };
+    return { ...state, musicItems: state.musicItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item), profile: {...state.profile, accessibleItems: state.profile.accessibleItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) } };
   }
 
   if (action.type === GET_ALL_AUDIO_ITEMS) {
@@ -152,6 +154,10 @@ export default function audio(state = initialState, action) {
 
 
     return { ...state, artistAudioItems };
+  }
+
+  if (action.type === GET_PROFILE_DATA) {
+    return { ...state, profile: action.payload };
   }
 
   return state;

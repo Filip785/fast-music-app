@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AudioItem;
+use App\AudioItemUser;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,30 @@ class UserApiController extends Controller
 
     return response()->json([
       'specificUsers' => $specificUsersReturn
+    ], 200);
+  }
+
+  public function getAllAccessibleAudioItemsToUserFromUser(Request $request, $userId) {
+    $data = $request->all();
+
+    $authUserId = $data['authUserId'];
+    $authUser = User::find($authUserId);
+    $profileUser = User::find($userId);
+    $profileUser->numberOfUploads = AudioItem::where(['uploaderId' => $userId])->count();
+    $profileUser->accountCreationDate = $profileUser->created_at->isoFormat('Do MMMM YYYY');
+
+    $accessibleItems = $authUser->accessibleItems()->where('uploaderId', '=', $userId)->get();
+
+    foreach($accessibleItems as $k => $audioItem) {
+      $accessibleItems[$k]->artistName = $audioItem->artist->artistName;
+      $accessibleItems[$k]->likes = AudioItemUser::where(['audio_item_id' => $audioItem->id, 'like' => 1])->count();
+      $accessibleItems[$k]->isLikedByUser = count(AudioItemUser::where(['audio_item_id' => $audioItem->id, 'user_id' => $authUserId, 'like' => 1])->get()) !== 0;
+      $accessibleItems[$k]->toggle = false;
+    }
+
+    return response()->json([
+      'profileData' => $profileUser,
+      'accessibleItems' => $accessibleItems
     ], 200);
   }
 }

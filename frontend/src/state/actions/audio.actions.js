@@ -18,7 +18,8 @@ import {
   TOGGLE_ITEM_ARTIST_SONGS,
   LIKE_ITEM_ARTISTS,
   DELETE_AUDIO,
-  DELETE_AUDIO_ARTISTS
+  DELETE_AUDIO_ARTISTS,
+  GET_PROFILE_DATA
 } from '../constants';
 
 export function toggleItem(id) {
@@ -228,5 +229,25 @@ export function toggleItemArtistSongs (value) {
   return {
     type: TOGGLE_ITEM_ARTIST_SONGS,
     payload: value
+  };
+}
+
+export function getProfileData(profileId, authUserId, authUserApiToken) {
+  return dispatch => {
+    return axios.get(`http://localhost/api/user/profile/${profileId}`, {
+      headers: {
+        Authorization: `Bearer ${authUserApiToken}`
+      },
+      params: {
+        authUserId
+      }
+    }).then(response => {
+      dispatch({ type: GET_PROFILE_DATA, payload: response.data });
+    }).catch(error => {
+      //here
+      if (error.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
+      }
+    });
   };
 }
