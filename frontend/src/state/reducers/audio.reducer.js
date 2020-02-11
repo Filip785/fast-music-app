@@ -7,7 +7,6 @@ import {
   GET_ALL_AUDIO_ITEMS,
   ADD_AUDIO_ITEM_FAILURE,
   ADD_AUDIO_ITEM_CLEANUP,
-  DASHBOARD_CLEANUP,
   GET_SPECIFIC_USERS,
   GET_AUDIO_ITEM,
   LIKE_ITEM,
@@ -27,12 +26,12 @@ const initialState = {
   specificUsers: [],
   musicItem: {},
   artistAudioItems: [],
-  profile: {profileData: {}, accessibleItems: []}
+  profile: {}
 };
 
 export default function audio(state = initialState, action) {
   if (action.type === TOGGLE_ITEM) {
-    return { ...state, musicItems: state.musicItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item), profile: {...state.profile, accessibleItems: state.profile.accessibleItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) } };
+    return { ...state, musicItems: state.musicItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) };
   }
 
   if (action.type === GET_ALL_AUDIO_ITEMS) {
@@ -69,10 +68,6 @@ export default function audio(state = initialState, action) {
 
   if (action.type === GET_SPECIFIC_USERS) {
     return { ...state, specificUsers: action.payload };
-  }
-
-  if (action.type === DASHBOARD_CLEANUP) {
-    return { ...state, musicItems: [] };
   }
 
   if (action.type === LIKE_ITEM) {
@@ -157,7 +152,7 @@ export default function audio(state = initialState, action) {
   }
 
   if (action.type === GET_PROFILE_DATA) {
-    return { ...state, profile: action.payload };
+    return { ...state, profile: action.payload.profileData, musicItems: action.payload.accessibleItems };
   }
 
   return state;

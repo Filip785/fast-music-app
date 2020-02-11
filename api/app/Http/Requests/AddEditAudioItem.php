@@ -44,7 +44,7 @@ class AddEditAudioItem extends FormRequest
     {
 	    $validator->sometimes('fileUpload', 'required', function ($input) {
 	    	// for now disable file upload when updating
-	    	return $this->method() !== 'POST';
+	    	return $this->method() === 'POST';
 	    });
 
 			$validator->sometimes('allowedUsers', 'required', function ($input) {

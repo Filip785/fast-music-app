@@ -86,25 +86,42 @@ class UserApiController extends Controller
 
   public function getAllAccessibleAudioItemsToUserFromUser(Request $request, $userId) {
     $data = $request->all();
-
     $authUserId = $data['authUserId'];
-    $authUser = User::find($authUserId);
+
     $profileUser = User::find($userId);
+    $accessibleItems = null;
+    $isUploader = false;
+
+    if(intval($userId) === intval($authUserId)) {
+      $accessibleItems = $profileUser->accessibleItems()->where('uploaderId', '=', $userId)->get();
+      $isUploader = true;
+    } else {
+      $accessibleItems = User::find($authUserId)->accessibleItems()->where('uploaderId', '=', $userId)->get();
+    }
+
     $profileUser->numberOfUploads = AudioItem::where(['uploaderId' => $userId])->count();
     $profileUser->accountCreationDate = $profileUser->created_at->isoFormat('Do MMMM YYYY');
 
-    $accessibleItems = $authUser->accessibleItems()->where('uploaderId', '=', $userId)->get();
+    $audioItemsReturn = [];
 
     foreach($accessibleItems as $k => $audioItem) {
-      $accessibleItems[$k]->artistName = $audioItem->artist->artistName;
-      $accessibleItems[$k]->likes = AudioItemUser::where(['audio_item_id' => $audioItem->id, 'like' => 1])->count();
-      $accessibleItems[$k]->isLikedByUser = count(AudioItemUser::where(['audio_item_id' => $audioItem->id, 'user_id' => $authUserId, 'like' => 1])->get()) !== 0;
-      $accessibleItems[$k]->toggle = false;
+      $uploader = $audioItem->uploader;
+
+      $audioItemsReturn[$k] = [
+        'id' => $audioItem->id,
+        'toggle' => false,
+        'songTitle' => $audioItem->songTitle,
+        'artistName' => $audioItem->artist->artistName,
+        'isLikedByUser' => count(AudioItemUser::where(['audio_item_id' => $audioItem->id, 'user_id' => $authUserId, 'like' => 1])->get()) !== 0,
+        'likes' => AudioItemUser::where(['audio_item_id' => $audioItem->id, 'like' => 1])->count(),
+        'url' => $audioItem->audioUrl,
+        'uploader' => $uploader
+      ];
     }
 
     return response()->json([
       'profileData' => $profileUser,
-      'accessibleItems' => $accessibleItems
+      'accessibleItems' => $audioItemsReturn
     ], 200);
   }
 }

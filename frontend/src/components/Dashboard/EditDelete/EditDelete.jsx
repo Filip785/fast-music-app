@@ -30,8 +30,8 @@ export default function EditDelete(props) {
   };
 
   return (
-    <div>
-      <div>
+    <>
+      <div style={{marginBottom: '20px'}}>
         <Button
           variant="contained"
           color="primary"
@@ -42,15 +42,13 @@ export default function EditDelete(props) {
         >
           Edit item
         </Button>
-      </div>
-
-      <div style={{ margin: '20px 0' }}>
         <Button
           variant="contained"
           color="secondary"
           size="medium"
           onClick={handleClickOpen}
           startIcon={<Delete />}
+          style={{marginLeft: '20px'}}
         >
           Delete item
         </Button>
@@ -79,6 +77,6 @@ export default function EditDelete(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }

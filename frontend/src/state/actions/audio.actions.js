@@ -10,7 +10,6 @@ import {
   ADD_AUDIO_ITEM_FAILURE,
   ADD_AUDIO_ITEM_CLEANUP,
   TOGGLE_LOADING_SPINNER,
-  DASHBOARD_CLEANUP,
   GET_SPECIFIC_USERS,
   GET_AUDIO_ITEM,
   LIKE_ITEM,
@@ -71,7 +70,7 @@ export function addOrEditAudioItem(requestData, songTitle, artistId, { fileName,
         return;
       }
 
-      dispatch({ type: ADD_AUDIO_ITEM_FAILURE, payload: error.response.data });
+      dispatch({ type: ADD_AUDIO_ITEM_FAILURE, payload: error.response.data.errors });
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     });
   };
@@ -104,12 +103,6 @@ export function closeFileNotAllowedPrompt() {
 export function cleanupAddFilePage() {
   return {
     type: ADD_AUDIO_ITEM_CLEANUP
-  };
-}
-
-export function cleanupDashboardPage() {
-  return {
-    type: DASHBOARD_CLEANUP
   };
 }
 
@@ -243,6 +236,7 @@ export function getProfileData(profileId, authUserId, authUserApiToken) {
       }
     }).then(response => {
       dispatch({ type: GET_PROFILE_DATA, payload: response.data });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
       //here
       if (error.response.status === 401) {

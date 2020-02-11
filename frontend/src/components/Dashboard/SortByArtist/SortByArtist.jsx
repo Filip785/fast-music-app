@@ -39,9 +39,9 @@ class ConnectedSortByArtist extends React.Component {
     const { artistAudioItems, user } = this.props;
     
     return (
-      <div>
+      <>
         {dataLoaded && (artistAudioItems.map(el => (
-          <div key={el.id}>
+          <React.Fragment key={el.id}>
             <ListItem button onClick={() => this.handleExpandEv(el.id)}>
               <ListItemText primary={el.artistName} />
               {el.toggle ? <ExpandLess /> : <ExpandMore />}
@@ -77,9 +77,9 @@ class ConnectedSortByArtist extends React.Component {
                 </ListItem>
               </List>
             </Collapse>
-          </div>
+          </React.Fragment>
         )))}
-      </div>
+      </>
     );
   }
 }

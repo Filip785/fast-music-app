@@ -45,7 +45,7 @@ class ConnectedAddEditAudioItem extends React.Component {
     super(props);
 
     const { type } = this.props;
-    
+
     this.state = {
       dataLoaded: type === 'add' ? true : false,
       title: '',
@@ -72,8 +72,8 @@ class ConnectedAddEditAudioItem extends React.Component {
 
   setupEditPage(musicItem) {
     this.selectedArtist = musicItem.artist;
-    if(musicItem.visibility === 2) {
-      this.selectedUsers = musicItem.allowed_users.map(item => ({id: item.id, username: item.username}));
+    if (musicItem.visibility === 2) {
+      this.selectedUsers = musicItem.allowed_users.map(item => ({ id: item.id, username: item.username }));
       this.defaultUsers = this.selectedUsers;
     }
     this.setState({
@@ -87,7 +87,7 @@ class ConnectedAddEditAudioItem extends React.Component {
   componentDidMount() {
     const { type } = this.props;
 
-    if(type === 'edit') {
+    if (type === 'edit') {
       this.props.toggleLoadSpinner();
     }
     this.props.getArtists(this.props.user.api_token).then(() => {
@@ -98,7 +98,7 @@ class ConnectedAddEditAudioItem extends React.Component {
           const { musicItem } = this.props;
 
           // specific users only
-          if(musicItem.visibility === 2) {
+          if (musicItem.visibility === 2) {
             this.props.getSpecificUsers(this.props.user.id, this.props.user.api_token).then(() => {
               this.setupEditPage(musicItem);
               this.props.toggleLoadSpinner();
@@ -107,9 +107,9 @@ class ConnectedAddEditAudioItem extends React.Component {
             this.props.toggleLoadSpinner();
             this.setupEditPage(musicItem);
           }
-        }, () => {});
+        }, () => { });
       }
-    });    
+    });
   }
 
   componentWillUnmount() {
@@ -126,7 +126,7 @@ class ConnectedAddEditAudioItem extends React.Component {
     let method = 'post';
     let action = '/add';
 
-    if(type === 'edit') {
+    if (type === 'edit') {
       method = 'put';
       action = `/edit/${musicItem.id}`;
     }
@@ -165,11 +165,11 @@ class ConnectedAddEditAudioItem extends React.Component {
     this.setState({ visibility: value });
 
     // only specific users
-    if(value === 2 && specificUsers.length === 0) {
+    if (value === 2 && specificUsers.length === 0) {
       this.props.getSpecificUsers(this.props.user.id, this.props.user.api_token);
     }
 
-    if(value !== 2) {
+    if (value !== 2) {
       this.selectedUsers = [];
     }
   }
@@ -214,123 +214,121 @@ class ConnectedAddEditAudioItem extends React.Component {
     return (
       <Container maxWidth="sm">
         {dataLoaded && <Paper className="paperPadding">
-          <div>
-            <Grid container spacing={8} justify="center">
-              <h1>{type === 'add' ? ('Add new song') : ('Edit this song')}</h1>
+          <Grid container spacing={8} justify="center">
+            <h1>{type === 'add' ? ('Add new song') : ('Edit this song')}</h1>
+          </Grid>
+          <Grid container spacing={8} alignItems="flex-end">
+            <Grid item md={true} sm={true} xs={true}>
+              <TextField id="title" label="Song Title" type="text" error={Boolean(musicItemError.songTitle)} helperText={musicItemError.songTitle} value={title} onChange={this.handleChangeTitleEv} fullWidth autoFocus />
             </Grid>
-            <Grid container spacing={8} alignItems="flex-end">
-              <Grid item md={true} sm={true} xs={true}>
-                <TextField id="title" label="Song Title" type="text" error={Boolean(musicItemError.songTitle)} helperText={musicItemError.songTitle} value={title} onChange={this.handleChangeTitleEv} fullWidth autoFocus />
-              </Grid>
+          </Grid>
+          <Grid container spacing={8}>
+            <Grid container direction="column" alignItems="flex-start" item md={true} sm={true} xs={true}>
+              <Autocomplete
+                id="autocomplete-artist"
+                style={{ width: '100%' }}
+                options={artists}
+                getOptionLabel={option => option.artistName}
+                onChange={this.handleChangeArtistNameEv}
+                onBlur={this.handleBlurArtistNameEv}
+                renderInput={params => {
+                  // temporary fix, probably bug in material-ui (TextField not updating value)
+                  params.inputProps.value = artistName;
+                  return (
+                    <TextField value={this.state.artistName} {...params} error={Boolean(musicItemError.artistId)} helperText={musicItemError.artistId} label="Artist Name" name="artistName" margin="normal" fullWidth onChange={this.handleChangeArtistNameEv} />
+                  );
+                }}
+              />
+              <Button color="primary" onClick={this.handleToggleDialogEv}>Add New Artist</Button>
             </Grid>
-            <Grid container spacing={8}>
-              <Grid container direction="column" alignItems="flex-start" item md={true} sm={true} xs={true}>
-                <Autocomplete
-                  id="autocomplete-artist"
-                  style={{ width: '100%' }}
-                  options={artists}
-                  getOptionLabel={option => option.artistName}
-                  onChange={this.handleChangeArtistNameEv}
-                  onBlur={this.handleBlurArtistNameEv}
-                  renderInput={params => {
-                    // temporary fix, probably bug in material-ui (TextField not updating value)
-                    params.inputProps.value = artistName;
-                    return (
-                      <TextField value={this.state.artistName} {...params} error={Boolean(musicItemError.artistId)} helperText={musicItemError.artistId} label="Artist Name" name="artistName" margin="normal" fullWidth onChange={this.handleChangeArtistNameEv} />
-                    );
-                  }}
+          </Grid>
+          {type !== 'edit' && <Grid container spacing={8} alignItems="flex-end">
+            <Grid container alignItems="flex-start" direction="column" item md={true} sm={true} xs={true}>
+              <Fragment>
+                <input
+                  color="primary"
+                  type="file"
+                  id="icon-button-file"
+                  style={{ display: 'none', }}
+                  onChange={this.handleFileChangeEv}
                 />
-                <Button color="primary" onClick={this.handleToggleDialogEv}>Add New Artist</Button>
-              </Grid>
-            </Grid>
-            {type !== 'edit' && <Grid container spacing={8} alignItems="flex-end">
-              <Grid container alignItems="flex-start" direction="column" item md={true} sm={true} xs={true}>
-                <Fragment>
-                  <input
+                <label htmlFor="icon-button-file">
+                  <Button
+                    variant="contained"
+                    component="span"
+                    size="large"
                     color="primary"
-                    type="file"
-                    id="icon-button-file"
-                    style={{ display: 'none', }}
-                    onChange={this.handleFileChangeEv}
+                  >
+                    <PublishIcon />
+                    <span style={{ paddingLeft: '10px' }}>Add Audio File</span>
+                  </Button>
+                </label>
+              </Fragment>
+              {musicItemError.fileUpload && <div><p style={{ color: 'red' }}>{musicItemError.fileUpload}</p></div>}
+              {musicFile.name && <div style={{ width: '100%', textAlign: 'left' }}>
+                <Paper className="paperPaddingFileUpload">
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>{musicFile.name}</div>
+                    <div>{musicFile.size}</div>
+                  </div>
+                </Paper>
+              </div>}
+            </Grid>
+          </Grid>}
+
+          <Grid container spacing={8} alignItems="flex-end">
+            <Grid item md={true} sm={true} xs={true}>
+              <FormControl style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                <FormLabel style={{ fontWeight: 'bold' }} component="legend">This item will be visible to:</FormLabel>
+
+                <RadioGroup style={{ display: 'flex', flexDirection: 'row' }} value={visibility} defaultValue={0} onChange={this.handleVisibilityChangeEv}>
+                  <FormControlLabel
+                    value="0"
+                    control={<Radio checked={visibility === 0} color="primary" />}
+                    label="Everyone"
+                    labelPlacement="end"
                   />
-                  <label htmlFor="icon-button-file">
-                    <Button
-                      variant="contained"
-                      component="span"
-                      size="large"
-                      color="primary"
-                    >
-                      <PublishIcon />
-                      <span style={{ paddingLeft: '10px' }}>Add Audio File</span>
-                    </Button>
-                  </label>
-                </Fragment>
-                {musicItemError.fileUpload && <div><p style={{ color: 'red' }}>{musicItemError.fileUpload}</p></div>}
-                {musicFile.name && <div style={{ width: '100%', textAlign: 'left' }}>
-                  <Paper className="paperPaddingFileUpload">
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <div>{musicFile.name}</div>
-                      <div>{musicFile.size}</div>
-                    </div>
-                  </Paper>
-                </div>}
-              </Grid>
-            </Grid>}
+                  <FormControlLabel
+                    value="1"
+                    control={<Radio checked={visibility === 1} color="primary" />}
+                    label="Just me"
+                    labelPlacement="end"
+                  />
+                  <FormControlLabel
+                    value="2"
+                    control={<Radio checked={visibility === 2} color="primary" />}
+                    label="Specific users"
+                    labelPlacement="end"
+                  />
+                </RadioGroup>
+              </FormControl>
 
-            <Grid container spacing={8} alignItems="flex-end">
-              <Grid item md={true} sm={true} xs={true}>
-                <FormControl style={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}>
-                  <FormLabel style={{fontWeight: 'bold'}} component="legend">This item will be visible to:</FormLabel>
-
-                  <RadioGroup style={{display: 'flex', flexDirection: 'row'}} value={visibility} defaultValue={0} onChange={this.handleVisibilityChangeEv}>
-                    <FormControlLabel
-                      value="0"
-                      control={<Radio checked={visibility === 0} color="primary" />}
-                      label="Everyone"
-                      labelPlacement="end"
-                    />
-                    <FormControlLabel 
-                      value="1"
-                      control={<Radio checked={visibility === 1} color="primary" />}
-                      label="Just me"
-                      labelPlacement="end"
-                    />
-                    <FormControlLabel 
-                      value="2"
-                      control={<Radio checked={visibility === 2} color="primary" />}
-                      label="Specific users"
-                      labelPlacement="end"
-                    />
-                  </RadioGroup>
-                </FormControl>
-
-                {visibility === 2 && <Autocomplete
-                  multiple
-                  id="specific-users"
-                  options={specificUsers}
-                  getOptionLabel={user => user.username}
-                  onChange={this.handleAllowedUserEv}
-                  defaultValue={type === 'add' ? [] : this.defaultUsers}
-                  renderInput={params => (
-                    <TextField 
-                      {...params}
-                      error={Boolean(musicItemError.allowedUsers)}
-                      helperText={musicItemError.allowedUsers}
-                      label="Pick users who should see this item"
-                      placeholder="Users"
-                      fullWidth
-                    />
-                  )}
-                />}
-              </Grid>
+              {visibility === 2 && <Autocomplete
+                multiple
+                id="specific-users"
+                options={specificUsers}
+                getOptionLabel={user => user.username}
+                onChange={this.handleAllowedUserEv}
+                defaultValue={type === 'add' ? [] : this.defaultUsers}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    error={Boolean(musicItemError.allowedUsers)}
+                    helperText={musicItemError.allowedUsers}
+                    label="Pick users who should see this item"
+                    placeholder="Users"
+                    fullWidth
+                  />
+                )}
+              />}
             </Grid>
+          </Grid>
 
-            <Grid container justify="center" style={{ marginTop: '25px' }}>
-              <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleAddEv}>
-                {type === 'add' ? ('Add') : ('Edit')}
-              </Button>
-            </Grid>
-          </div>
+          <Grid container justify="center" style={{ marginTop: '25px' }}>
+            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleAddEv}>
+              {type === 'add' ? ('Add') : ('Edit')}
+            </Button>
+          </Grid>
         </Paper>}
 
         <AddArtistDialog handleToggleDialogEv={this.handleToggleDialogEv} handleChangeArtistNameEv={this.handleChangeArtistNameEv} artistName={artistName} userApiToken={user.api_token} onBlurAddItemForm={this.handleBlurArtistNameEv} />
@@ -354,4 +352,4 @@ export default connect(mapStateToProps, {
   toggleLoadSpinner,
   getSpecificUsers,
   getAudioItem
-}) (ConnectedAddEditAudioItem);
+})(ConnectedAddEditAudioItem);
