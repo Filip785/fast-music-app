@@ -43,8 +43,6 @@ export default function AllSongsList(props) {
     }
   }, [profileId, user.id, user.api_token, dispatch, isProfile, props.location.state]);
 
-  console.log('DOING');
-
   return (
     <>
       {dataLoaded && <>
