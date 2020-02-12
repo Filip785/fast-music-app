@@ -1,6 +1,6 @@
 import { TOGGLE_FILE_CHANGE } from '../constants';
 
-const allowedFileTypes = ['audio/mpeg', 'audio/wav'];
+const allowedFileTypes = ['audio/mpeg', 'audio/wav', 'audio/mp3'];
 
 export function verifyIsAllowedFileType({ dispatch }) {
   return function (next) {
