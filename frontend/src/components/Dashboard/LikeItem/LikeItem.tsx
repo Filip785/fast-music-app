@@ -4,17 +4,27 @@ import { Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { doLike, toggleLoadSpinner } from '../../../state/actions';
 
-export default function LikeItem(props) {
+interface CardProps {
+  userId: number;
+  uploaderId: number;
+  isLikedByUser: boolean;
+  audioItemId: number;
+  userApiToken: string;
+  numLikes: number;
+  artistId?: number;
+}
+
+const LikeItem: React.FunctionComponent<CardProps> = (props: CardProps): React.ReactElement => {
   const dispatch = useDispatch();
-  
+  console.log(props);
   return (
     <>
-      {(props.userId !== props.uploaderId) && <Button
+      {props.userId !== props.uploaderId && <Button
         variant="contained"
         component="span"
         size="large"
         color="primary"
-        style={{marginTop: '20px', marginBottom: '20px'}}
+        style={{ marginTop: '20px', marginBottom: '20px' }}
         onClick={() => {
           dispatch(doLike(props.audioItemId, props.userId, props.userApiToken, Boolean(props.artistId), props.artistId));
           dispatch(toggleLoadSpinner());
@@ -26,4 +36,16 @@ export default function LikeItem(props) {
       <h3>Likes: {props.numLikes}</h3>
     </>
   );
-}
+};
+
+export default LikeItem;
+
+// export default function LikeItem(props: CardProps) {
+//   const dispatch = useDispatch();
+//   console.log(props);
+//   return (
+//     <>
+//       {
+//     </>
+//   );
+// }
