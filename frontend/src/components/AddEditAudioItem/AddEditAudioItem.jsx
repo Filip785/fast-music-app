@@ -20,24 +20,24 @@ import {
 import {
   getArtists,
   toggleAddArtistDialog,
-  toggleFileChange,
-  closeFileNotAllowedPrompt,
   addOrEditAudioItem,
   cleanupAddFilePage,
   toggleLoadSpinner,
   getSpecificUsers,
   getAudioItem
 } from '../../state/actions';
+import {
+  toggleFileChange,
+  closeFileNotAllowedPrompt
+} from '../../state/audio/audio.action';
 
 const mapStateToProps = state => ({
   user: state.authReducer.user.authUser,
   artists: state.artistReducer.artists,
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
-  musicFile: state.audioReducer.musicFile,
-  musicItemError: state.audioReducer.musicItemError,
-  fileExtensionNotAllowed: state.audioReducer.fileExtensionNotAllowed,
   specificUsers: state.audioReducer.specificUsers,
-  musicItem: state.audioReducer.musicItem
+  musicItem: state.audioReducer.musicItem,
+  fileUpload: state.audioReducerTs.fileUpload
 });
 
 class ConnectedAddEditAudioItem extends React.Component {
@@ -58,7 +58,7 @@ class ConnectedAddEditAudioItem extends React.Component {
     this.selectedUsers = [];
     this.defaultUsers = [];
 
-    this.handleAddEv = this.handleAdd.bind(this);
+    this.handleSubmitEv = this.handleSubmit.bind(this);
     this.handleChangeTitleEv = this.handleChangeTitle.bind(this);
     this.handleChangeArtistNameEv = this.handleChangeArtistName.bind(this);
 
@@ -117,7 +117,7 @@ class ConnectedAddEditAudioItem extends React.Component {
     this.props.cleanupAddFilePage();
   }
 
-  handleAdd() {
+  handleSubmit() {
     const { title, visibility } = this.state;
     const { musicFile, type, musicItem } = this.props;
 
@@ -209,17 +209,19 @@ class ConnectedAddEditAudioItem extends React.Component {
 
   render() {
     const { title, artistName, visibility, dataLoaded } = this.state;
-    const { artists, user, musicFile, fileExtensionNotAllowed, musicItemError, specificUsers, type } = this.props;
+    const { artists, user, fileUpload, specificUsers, type } = this.props;
+    
+    const { musicFile, musicFileErrors } = fileUpload;
 
     return (
       <Container maxWidth="sm">
         {dataLoaded && <Paper className="paperPadding">
-          <Grid container spacing={8} justify="center">
+          <Grid container spacing={8} jus1tify="center">
             <h1>{type === 'add' ? ('Add new song') : ('Edit this song')}</h1>
           </Grid>
           <Grid container spacing={8} alignItems="flex-end">
             <Grid item md={true} sm={true} xs={true}>
-              <TextField id="title" label="Song Title" type="text" error={Boolean(musicItemError.songTitle)} helperText={musicItemError.songTitle} value={title} onChange={this.handleChangeTitleEv} fullWidth autoFocus />
+              <TextField id="title" label="Song Title" type="text" error={Boolean(musicFileErrors.songTitle)} helperText={musicFileErrors.songTitle} value={title} onChange={this.handleChangeTitleEv} fullWidth autoFocus />
             </Grid>
           </Grid>
           <Grid container spacing={8}>
@@ -235,7 +237,7 @@ class ConnectedAddEditAudioItem extends React.Component {
                   // temporary fix, probably bug in material-ui (TextField not updating value)
                   params.inputProps.value = artistName;
                   return (
-                    <TextField value={this.state.artistName} {...params} error={Boolean(musicItemError.artistId)} helperText={musicItemError.artistId} label="Artist Name" name="artistName" margin="normal" fullWidth onChange={this.handleChangeArtistNameEv} />
+                    <TextField value={this.state.artistName} {...params} error={Boolean(musicFileErrors.artistId)} helperText={musicFileErrors.artistId} label="Artist Name" name="artistName" margin="normal" fullWidth onChange={this.handleChangeArtistNameEv} />
                   );
                 }}
               />
@@ -264,7 +266,7 @@ class ConnectedAddEditAudioItem extends React.Component {
                   </Button>
                 </label>
               </Fragment>
-              {musicItemError.fileUpload && <div><p style={{ color: 'red' }}>{musicItemError.fileUpload}</p></div>}
+              {musicFileErrors.fileUpload && <div><p style={{ color: 'red' }}>{musicFileErrors.fileUpload}</p></div>}
               {musicFile.name && <div style={{ width: '100%', textAlign: 'left' }}>
                 <Paper className="paperPaddingFileUpload">
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -313,8 +315,8 @@ class ConnectedAddEditAudioItem extends React.Component {
                 renderInput={params => (
                   <TextField
                     {...params}
-                    error={Boolean(musicItemError.allowedUsers)}
-                    helperText={musicItemError.allowedUsers}
+                    error={Boolean(musicFileErrors.allowedUsers)}
+                    helperText={musicFileErrors.allowedUsers}
                     label="Pick users who should see this item"
                     placeholder="Users"
                     fullWidth
@@ -325,14 +327,14 @@ class ConnectedAddEditAudioItem extends React.Component {
           </Grid>
 
           <Grid container justify="center" style={{ marginTop: '25px' }}>
-            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleAddEv}>
+            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleSubmitEv}>
               {type === 'add' ? ('Add') : ('Edit')}
             </Button>
           </Grid>
         </Paper>}
 
         <AddArtistDialog handleToggleDialogEv={this.handleToggleDialogEv} handleChangeArtistNameEv={this.handleChangeArtistNameEv} artistName={artistName} userApiToken={user.api_token} onBlurAddItemForm={this.handleBlurArtistNameEv} />
-        <Snackbar open={fileExtensionNotAllowed} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPromptEv}>
+        <Snackbar open={musicFileErrors.fileExtensionNotAllowed} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPromptEv}>
           <Alert severity="error">
             Please only upload .mp3 and .wav files! Thanks.
           </Alert>

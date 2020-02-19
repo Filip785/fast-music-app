@@ -16,7 +16,7 @@ interface CardProps {
 
 const LikeItem: React.FunctionComponent<CardProps> = (props: CardProps): React.ReactElement => {
   const dispatch = useDispatch();
-  console.log(props);
+  
   return (
     <>
       {props.userId !== props.uploaderId && <Button
@@ -39,13 +39,3 @@ const LikeItem: React.FunctionComponent<CardProps> = (props: CardProps): React.R
 };
 
 export default LikeItem;
-
-// export default function LikeItem(props: CardProps) {
-//   const dispatch = useDispatch();
-//   console.log(props);
-//   return (
-//     <>
-//       {
-//     </>
-//   );
-// }

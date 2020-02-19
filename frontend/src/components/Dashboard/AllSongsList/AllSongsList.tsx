@@ -5,18 +5,22 @@ import { Link } from 'react-router-dom';
 import EditDelete from '../EditDelete/EditDelete';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProfileData, toggleItem, toggleLoadSpinner, getAllAudioItems } from '../../../state/actions';
+import { getProfileData, toggleLoadSpinner } from '../../../state/actions';
+import { getAllAudioItems, toggleItem } from '../../../state/audio/audio.action';
 import history from '../../../helpers/history';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { AudioState } from '../../../state/audio/audio.types';
 
-export default function AllSongsList(props) {
+export default function AllSongsList(props: any) {
   const [dataLoaded, setDataLoaded] = useState(false);
-  const musicItems = useSelector(state => state.audioReducer.musicItems);
-  const user = useSelector(state => state.authReducer.user.authUser);
-  const dispatch = useDispatch();
+  const audioItems = useSelector((state: any) => state.audioReducerTs.audioItems);
+  const user = useSelector((state: any) => state.authReducer.user.authUser);
+  const dispatch = useDispatch<ThunkDispatch<AudioState, null, AnyAction>>();
 
   const { isProfile, profileId } = props;
 
-  const handleExpand = (id) => {
+  const handleExpand = (id: any) => {
     dispatch(toggleItem(id));
   };
 
@@ -24,9 +28,7 @@ export default function AllSongsList(props) {
     if (isProfile) {
       // load profile data
       dispatch(toggleLoadSpinner());
-      dispatch(
-        getProfileData(profileId, user.id, user.api_token)
-      ).then(() => {
+      dispatch(getProfileData(profileId, user.id, user.api_token)).then(() => {
         setDataLoaded(true);
       });
     } else {
@@ -37,6 +39,7 @@ export default function AllSongsList(props) {
         // clear location state history
         history.replace({ pathname: '/dashboard', state: null });
       }
+      
       dispatch(getAllAudioItems(user.id, user.api_token)).then(() => {
         setDataLoaded(true);
       });
@@ -56,7 +59,7 @@ export default function AllSongsList(props) {
             aria-labelledby="nested-list-subheader"
             style={{ width: '1200px' }}
           >
-            {musicItems.length !== 0 ? musicItems.map(audioItem => (
+            {audioItems.length !== 0 ? audioItems.map((audioItem: any) => (
               <React.Fragment key={audioItem.id}>
               
                 <ListItem button onClick={() => handleExpand(audioItem.id)}>
