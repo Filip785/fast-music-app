@@ -2,8 +2,9 @@ import { combineReducers } from 'redux';
 import authReducer from './auth.reducer';
 import artistReducer from './artist.reducer';
 import audioReducer from './audio.reducer';
-import loadReducer from './load.reducer';
+//import loadReducer from './load.reducer';
 import audioReducerTs from '../audio/audio.reducer';
+import loadReducer from '../load/load.reducer';
 
 const rootReducer = combineReducers({
   authReducer,

@@ -9,7 +9,8 @@ import {
   Container,
   Snackbar
 } from '@material-ui/core';
-import { attemptLogin, attemptLoginFailureEnd, toggleLoadSpinner } from '../../state/actions';
+import { attemptLogin, attemptLoginFailureEnd } from '../../state/actions';
+import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 const mapStateToProps = state => ({
   registered: state.authReducer.registered,

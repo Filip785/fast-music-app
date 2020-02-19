@@ -22,7 +22,6 @@ import {
   toggleAddArtistDialog,
   addOrEditAudioItem,
   cleanupAddFilePage,
-  toggleLoadSpinner,
   getSpecificUsers,
   getAudioItem
 } from '../../state/actions';
@@ -30,6 +29,7 @@ import {
   toggleFileChange,
   closeFileNotAllowedPrompt
 } from '../../state/audio/audio.action';
+import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 const mapStateToProps = state => ({
   user: state.authReducer.user.authUser,

@@ -9,7 +9,8 @@ import {
   Button, 
   TextField 
 } from '@material-ui/core';
-import { toggleAddArtistDialog, createArtist, toggleLoadSpinner } from '../../state/actions';
+import { toggleAddArtistDialog, createArtist } from '../../state/actions';
+import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 const mapStateToProps = state => ({
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,

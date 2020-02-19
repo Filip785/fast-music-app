@@ -1,4 +1,5 @@
-import { DO_LOGOUT, TOGGLE_LOADING_SPINNER } from '../state/constants';
+import { DO_LOGOUT } from '../state/constants';
+import { TOGGLE_LOADING_SPINNER } from '../state/load/load.constants';
 
 export default function performFrontendLogout(dispatch, history, hasSpinner) {
   localStorage.removeItem('authUser');

@@ -38,7 +38,7 @@ export interface FileUpload {
   musicFileErrors: AudioFileErrors;
 }
 
-interface ToggleItemAction {
+export interface ToggleItemAction {
   type: typeof TOGGLE_ITEM,
   id: number
 }

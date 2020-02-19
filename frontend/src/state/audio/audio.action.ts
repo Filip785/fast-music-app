@@ -3,10 +3,10 @@ import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.c
 import { AudioActionTypes, AudioState, AudioFileActionTypes } from './audio.types';
 import axios from 'axios';
 import performFrontendLogout from '../../helpers/performFrontendLogout';
-import { TOGGLE_LOADING_SPINNER } from '../constants';
 import { ThunkAction } from 'redux-thunk';
 import { Dispatch } from 'redux';
 import history from '../../helpers/history';
+import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 
 type ThunkResult<R = Promise<void>> = ThunkAction<R, AudioState, unknown, AudioActionTypes>;
 

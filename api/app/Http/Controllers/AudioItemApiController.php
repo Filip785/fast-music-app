@@ -43,9 +43,7 @@ class AudioItemApiController extends Controller
 			];
 		}
 
-		return response()->json([
-			'audioItems' => $audioItemsReturn
-		], 200);
+		return response()->json($audioItemsReturn, 200);
 	}
 
 	public function details(Request $request, $audioItemId) {

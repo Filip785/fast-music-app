@@ -1,7 +1,8 @@
 import React from 'react';
-import { getProfileData, toggleLoadSpinner, toggleItem } from '../../state/actions';
+import { getProfileData, toggleItem } from '../../state/actions';
 import { connect } from 'react-redux';
 import AllSongsList from '../Dashboard/AllSongsList/AllSongsList';
+import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 const mapStateToProps = state => ({
   profile: state.audioReducer.profile,

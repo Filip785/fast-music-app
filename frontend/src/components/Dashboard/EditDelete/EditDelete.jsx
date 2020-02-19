@@ -3,7 +3,8 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogAc
 import { Link } from 'react-router-dom';
 import { Edit, Delete } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
-import { toggleLoadSpinner, deleteAudio } from '../../../state/actions';
+import { deleteAudio } from '../../../state/actions';
+import { toggleLoadSpinner } from '../../../state/load/load.actions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

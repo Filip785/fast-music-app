@@ -7,9 +7,9 @@ import {
   Tabs,
   Tab
 } from '@material-ui/core';
-import { toggleLoadSpinner } from '../../state/actions';
 import SortByArtist from './SortByArtist/SortByArtist';
 import AllSongsList from './AllSongsList/AllSongsList';
+import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 class ConnectedDashboard extends React.Component {
   constructor(props) {

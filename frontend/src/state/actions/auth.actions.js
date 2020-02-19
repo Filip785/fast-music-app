@@ -6,9 +6,9 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
   ATTEMPT_LOGIN_FAILURE,
-  ATTEMPT_LOGIN_FAILURE_END,
-  TOGGLE_LOADING_SPINNER
+  ATTEMPT_LOGIN_FAILURE_END
 } from '../constants';
+import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 
 export function attemptLogin(email, password) {
   return dispatch => {

@@ -6,7 +6,6 @@ import {
   ADD_AUDIO_ITEM,
   ADD_AUDIO_ITEM_FAILURE,
   ADD_AUDIO_ITEM_CLEANUP,
-  TOGGLE_LOADING_SPINNER,
   GET_SPECIFIC_USERS,
   GET_AUDIO_ITEM,
   LIKE_ITEM,
@@ -17,6 +16,7 @@ import {
   DELETE_AUDIO_ARTISTS,
   GET_PROFILE_DATA
 } from '../constants';
+import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 
 export function toggleItem(id) {
   return {
@@ -136,7 +136,6 @@ export function getAudioItemsForArtists(userId, userApiToken) {
       dispatch({ type: GET_AUDIO_ITEMS_FOR_ARTISTS, payload: response.data.artistAudioItems });
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
-      //here
       if (error.response.status === 401) {
         performFrontendLogout(dispatch, history, true);
       }
@@ -159,7 +158,6 @@ export function deleteAudio(audioId, userId, userApiToken, isArtists, artistId) 
       }
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
-      //here
       if (error.response.status === 401) {
         performFrontendLogout(dispatch, history, true);
 
@@ -193,7 +191,6 @@ export function getProfileData(profileId, authUserId, authUserApiToken) {
       dispatch({ type: GET_PROFILE_DATA, payload: response.data });
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     }).catch(error => {
-      //here
       if (error.response.status === 401) {
         performFrontendLogout(dispatch, history, true);
       }

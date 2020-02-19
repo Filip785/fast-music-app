@@ -4,10 +4,10 @@ import {
   GET_ALL_ARTISTS,
   TOGGLE_ADD_ARTIST_DIALOG, 
   CREATE_ARTIST, 
-  ADD_ARTIST_FAILURE, 
-  TOGGLE_LOADING_SPINNER
+  ADD_ARTIST_FAILURE
 } from '../constants';
 import performFrontendLogout from '../../helpers/performFrontendLogout';
+import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 
 export function getArtists(userApiToken) {
   return dispatch => {

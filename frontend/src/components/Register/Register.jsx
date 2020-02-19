@@ -7,7 +7,8 @@ import {
   Button,
   Container
 } from '@material-ui/core';
-import { attemptRegister, toggleLoadSpinner } from '../../state/actions';
+import { attemptRegister } from '../../state/actions';
+import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 const mapStateToProps = state => ({
   errors: state.authReducer.registerErrors
