@@ -1,4 +1,4 @@
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, LIKE_ITEM_ARTISTS } from './audio.constants';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
 
 interface AudioItemUploader {
@@ -38,36 +38,71 @@ export interface FileUpload {
   musicFileErrors: AudioFileErrors;
 }
 
+export interface ArtistAudioItem {
+  id: number;
+  toggle: boolean;
+  artistName: string;
+  audioItems: AudioItem[];
+}
+
 export interface ToggleItemAction {
-  type: typeof TOGGLE_ITEM,
-  id: number
+  type: typeof TOGGLE_ITEM;
+  id: number;
 }
 
 export interface GetAllAudioItemsAction {
-  type: typeof GET_ALL_AUDIO_ITEMS,
-  payload: AudioItem[]
+  type: typeof GET_ALL_AUDIO_ITEMS;
+  payload: AudioItem[];
+}
+
+export interface LikeItemAction {
+  type: typeof LIKE_ITEM;
+  audioId: number;
+  likeCount: number;
+}
+
+export interface LikeArtistItemAction {
+  type: typeof LIKE_ITEM_ARTISTS;
+  audioId: number;
+  likeCount: number;
+  artistId: number;
+}
+
+export interface ToggleItemArtistSongsAction {
+  type: typeof TOGGLE_ITEM_ARTIST_SONGS;
+  value: number;
+}
+
+export interface GetItemArtistSongsAction {
+  type: typeof GET_AUDIO_ITEMS_FOR_ARTISTS;
+  payload: ArtistAudioItem[];
 }
 
 export interface ToggleFileChangeAction {
-  type: typeof TOGGLE_FILE_CHANGE,
-  payload: AudioFile
+  type: typeof TOGGLE_FILE_CHANGE;
+  payload: AudioFile;
 }
 
 export interface ToggleFileChangeFileExtensionForbidden {
-  type: typeof FILE_EXTENSION_FORBIDDEN
+  type: typeof FILE_EXTENSION_FORBIDDEN;
 }
 
 export interface ToggleFileChangeFileExtensionForbiddenEnd {
-  type: typeof FILE_EXTENSION_FORBIDDEN_END
+  type: typeof FILE_EXTENSION_FORBIDDEN_END;
 }
 
 export type AudioActionTypes =
   ToggleItemAction |
-  GetAllAudioItemsAction;
+  GetAllAudioItemsAction |
+  LikeItemAction |
+  LikeArtistItemAction |
+  ToggleItemArtistSongsAction |
+  GetItemArtistSongsAction;
 
 export type AudioFileActionTypes = ToggleFileChangeAction | ToggleFileChangeFileExtensionForbidden | ToggleFileChangeFileExtensionForbiddenEnd;
 
 export type AudioState = {
   audioItems: AudioItem[];
+  audioItemsArtists: ArtistAudioItem[];
   fileUpload: FileUpload;
 }

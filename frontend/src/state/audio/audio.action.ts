@@ -1,12 +1,12 @@
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS } from './audio.constants';
-import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
-import { AudioActionTypes, AudioState, AudioFileActionTypes } from './audio.types';
 import axios from 'axios';
-import performFrontendLogout from '../../helpers/performFrontendLogout';
 import { ThunkAction } from 'redux-thunk';
 import { Dispatch } from 'redux';
 import history from '../../helpers/history';
 import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
+import performFrontendLogout from '../../helpers/performFrontendLogout';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, LIKE_ITEM_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS } from './audio.constants';
+import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
+import { AudioActionTypes, AudioState, AudioFileActionTypes } from './audio.types';
 
 type ThunkResult<R = Promise<void>> = ThunkAction<R, AudioState, unknown, AudioActionTypes>;
 
@@ -51,6 +51,55 @@ export function getAllAudioItems(userId: number, userApiToken: string): ThunkRes
       });
 
       dispatch({ type: GET_ALL_AUDIO_ITEMS, payload: response.data });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
+    } catch (err) {
+      performFrontendLogout(dispatch, history, true);
+    }
+  };
+}
+
+export function doLike(audioItemId: number, userId: number, userApiToken: string, isArtists: boolean, artistId: number | undefined): ThunkResult {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.post(`http://localhost/api/audio/like`, {
+        audioItemId,
+        userId
+      }, {
+        headers: {
+          Authorization: `Bearer ${userApiToken}`
+        }
+      });
+
+      if (!isArtists) {
+        dispatch({ type: LIKE_ITEM, likeCount: response.data.count, audioId: audioItemId });
+      }  else {
+        dispatch({ type: LIKE_ITEM_ARTISTS, likeCount: response.data.count, audioId: audioItemId, artistId });
+      }
+
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
+    } catch (err) {
+      performFrontendLogout(dispatch, history, true);
+    }
+  };
+}
+
+export function toggleItemArtistSongs(value: number): AudioActionTypes {
+  return {
+    type: TOGGLE_ITEM_ARTIST_SONGS,
+    value
+  };
+}
+
+export function getAudioItemsForArtists(userId: number, userApiToken: string): ThunkResult {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`http://localhost/api/audio/artist-audio-items/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${userApiToken}`
+        }
+      });
+  
+      dispatch({ type: GET_AUDIO_ITEMS_FOR_ARTISTS, payload: response.data.artistAudioItems });
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     } catch (err) {
       performFrontendLogout(dispatch, history, true);

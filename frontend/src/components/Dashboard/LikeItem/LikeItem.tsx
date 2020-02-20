@@ -2,8 +2,8 @@ import React from 'react';
 import { ThumbUp, ThumbDown } from '@material-ui/icons';
 import { Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { doLike } from '../../../state/actions';
 import { toggleLoadSpinner } from '../../../state/load/load.actions';
+import { doLike } from '../../../state/audio/audio.action';
 
 interface CardProps {
   userId: number;

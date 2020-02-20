@@ -8,10 +8,6 @@ import {
   ADD_AUDIO_ITEM_CLEANUP,
   GET_SPECIFIC_USERS,
   GET_AUDIO_ITEM,
-  LIKE_ITEM,
-  GET_AUDIO_ITEMS_FOR_ARTISTS,
-  TOGGLE_ITEM_ARTIST_SONGS,
-  LIKE_ITEM_ARTISTS,
   DELETE_AUDIO,
   DELETE_AUDIO_ARTISTS,
   GET_PROFILE_DATA
@@ -99,50 +95,6 @@ export function getAudioItem(authUserId, audioItemId, userApiToken) {
   };
 }
 
-export function doLike(audioItemId, userId, userApiToken, isArtists, artistId) {
-  return dispatch => {
-    return axios.post(`http://localhost/api/audio/like`, {
-      audioItemId,
-      userId
-    }, {
-      headers: {
-        Authorization: `Bearer ${userApiToken}`
-      }
-    }).then(response => {
-      if(isArtists) {
-        dispatch({ type: LIKE_ITEM_ARTISTS, likes: response.data.count, audioId: audioItemId, artistId: artistId });
-      } else {
-        dispatch({ type: LIKE_ITEM, payload: response.data.count, audioId: audioItemId });
-      }
-      
-      dispatch({ type: TOGGLE_LOADING_SPINNER });
-    }).catch(error => {
-      if (error.response.status === 401) {
-        performFrontendLogout(dispatch, history, true);
-
-        return;
-      }
-    });
-  };
-}
-
-export function getAudioItemsForArtists(userId, userApiToken) {
-  return dispatch => {
-    return axios.get(`http://localhost/api/audio/artist-audio-items/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${userApiToken}`
-      }
-    }).then(response => {
-      dispatch({ type: GET_AUDIO_ITEMS_FOR_ARTISTS, payload: response.data.artistAudioItems });
-      dispatch({ type: TOGGLE_LOADING_SPINNER });
-    }).catch(error => {
-      if (error.response.status === 401) {
-        performFrontendLogout(dispatch, history, true);
-      }
-    });
-  };
-}
-
 export function deleteAudio(audioId, userId, userApiToken, isArtists, artistId) {
   return dispatch => {
     return axios.delete(`http://localhost/api/audio/delete/${audioId}`, {
@@ -168,13 +120,6 @@ export function deleteAudio(audioId, userId, userApiToken, isArtists, artistId) 
         history.push('/dashboard', { withSpinner: true });
       }
     });
-  };
-}
-
-export function toggleItemArtistSongs (value) {
-  return {
-    type: TOGGLE_ITEM_ARTIST_SONGS,
-    payload: value
   };
 }
 

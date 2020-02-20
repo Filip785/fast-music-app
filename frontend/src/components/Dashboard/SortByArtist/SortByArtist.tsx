@@ -1,25 +1,38 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getAudioItemsForArtists, toggleItemArtistSongs } from '../../../state/actions';
 import { ListItem, ListItemText, Collapse, List, Divider } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import LikeItem from '../LikeItem/LikeItem';
 import EditDelete from '../EditDelete/EditDelete';
+import { AuthUser } from '../../../state/auth/auth.types';
+import { toggleItemArtistSongs, getAudioItemsForArtists } from '../../../state/audio/audio.action';
+import { AudioActionTypes, ArtistAudioItem } from '../../../state/audio/audio.types';
 
-const mapStateToProps = state => ({
+interface Props {
+  audioItemsArtists: ArtistAudioItem[];
+  user: AuthUser;
+  toggleItemArtistSongs: (value: number) => AudioActionTypes;
+  getAudioItemsForArtists: (userId: number, userApiToken: string) => Promise<void>;
+}
+
+interface State {
+  dataLoaded: boolean;
+}
+
+const mapStateToProps = (state: any) => ({
   user: state.authReducer.user.authUser,
-  artistAudioItems: state.audioReducer.artistAudioItems
+  audioItemsArtists: state.audioReducerTs.audioItemsArtists
 });
 
-class ConnectedSortByArtist extends React.Component {
-  constructor(props) {
+class ConnectedSortByArtist extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
       dataLoaded: false
     };
 
-    this.handleExpandEv = this.handleExpand.bind(this);
+    this.handleExpand = this.handleExpand.bind(this);
   }
 
   componentDidMount() {
@@ -30,19 +43,19 @@ class ConnectedSortByArtist extends React.Component {
     });
   }
 
-  handleExpand(value) {
+  handleExpand(value: number): void {
     this.props.toggleItemArtistSongs(value);
   }
 
   render() {
     const { dataLoaded } = this.state;
-    const { artistAudioItems, user } = this.props;
+    const { audioItemsArtists, user } = this.props;
     
     return (
       <>
-        {dataLoaded && (artistAudioItems.map(el => (
+        {dataLoaded && (audioItemsArtists.map(el => (
           <React.Fragment key={el.id}>
-            <ListItem button onClick={() => this.handleExpandEv(el.id)}>
+            <ListItem button onClick={() => this.handleExpand(el.id)}>
               <ListItemText primary={el.artistName} />
               {el.toggle ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
