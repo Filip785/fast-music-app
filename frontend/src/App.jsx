@@ -60,14 +60,14 @@ class ConnectedApp extends React.Component {
       <Router history={history}>
           <div className="App">
             <AppBar>
-              <Toolbar className={classes.container} style={!loggedIn ? {justifyContent: 'flex-end'} : {}}>
-                {loggedIn && <Typography variant="h6" className={classes.title} component={Link} to="/dashboard" color="inherit" style={{ textDecoration: 'none' }}>
+              <Toolbar className={classes.container} style={!loggedIn.status ? {justifyContent: 'flex-end'} : {}}>
+                {loggedIn.status && <Typography variant="h6" className={classes.title} component={Link} to="/dashboard" color="inherit" style={{ textDecoration: 'none' }}>
                   Welcome, {authUser.name}
                 </Typography>}
                 <div className="links">
-                  {!loggedIn && <Button color="inherit" component={Link} to="/login">Login</Button>}
-                  {!loggedIn && <Button color="inherit" component={Link} to="/register">Register</Button>}
-                  {loggedIn && <Button
+                  {!loggedIn.status && <Button color="inherit" component={Link} to="/login">Login</Button>}
+                  {!loggedIn.status && <Button color="inherit" component={Link} to="/register">Register</Button>}
+                  {loggedIn.status && <Button
                     variant="contained"
                     color="primary"
                     size="medium"
@@ -77,7 +77,7 @@ class ConnectedApp extends React.Component {
                   >
                     Add new item
                   </Button>}
-                  {loggedIn && <Button color="inherit" onClick={this.doLogoutEv}>Logout</Button>}
+                  {loggedIn.status && <Button color="inherit" onClick={this.doLogoutEv}>Logout</Button>}
                 </div>
               </Toolbar>
             </AppBar>

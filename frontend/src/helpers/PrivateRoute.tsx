@@ -1,0 +1,23 @@
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+
+interface AdditionalPropType {
+  type: string;
+}
+
+interface LoggedInObject {
+  status: boolean;
+  fromAuth: boolean;
+}
+
+interface Props {
+  component: React.ComponentType<any>;
+  loggedIn: LoggedInObject;
+  additionalProps: AdditionalPropType;
+}
+
+const PrivateRoute: React.FC<Props> = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => rest.loggedIn.status ? ( <Component {...props} {...rest.additionalProps} /> ) : (<Redirect to="/login" />) } />
+);
+
+export default PrivateRoute; 
