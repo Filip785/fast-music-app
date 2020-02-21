@@ -1,7 +1,13 @@
 import React from 'react';
 import { Typography, Box } from '@material-ui/core';
 
-export default function TabPanel(props) {
+interface Props {
+  value: number;
+  index: number;
+  children: React.ReactChildren;
+}
+
+export default function TabPanel(props: Props) {
   const { value, index, children } = props;
   return (
     <Typography component="div" role="tabpanel" id={`simple-tabpanel-${index}`}>

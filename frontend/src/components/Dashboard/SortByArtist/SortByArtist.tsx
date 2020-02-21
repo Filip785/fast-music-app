@@ -7,6 +7,7 @@ import EditDelete from '../EditDelete/EditDelete';
 import { AuthUser } from '../../../state/auth/auth.types';
 import { toggleItemArtistSongs, getAudioItemsForArtists } from '../../../state/audio/audio.action';
 import { AudioActionTypes, ArtistAudioItem } from '../../../state/audio/audio.types';
+import { Link } from 'react-router-dom';
 
 interface Props {
   audioItemsArtists: ArtistAudioItem[];
@@ -80,7 +81,7 @@ class ConnectedSortByArtist extends React.Component<Props, State> {
                       </audio>
                         <div style={{ marginTop: '20px' }}>
                           {(artistSong.uploader.id === user.id) && <EditDelete audioId={artistSong.id} userId={user.id} userApiToken={user.api_token} isArtists={true} artistId={el.id} />}
-                          Uploaded by <strong>{artistSong.uploader.name}</strong>
+                          Uploaded by <Link to={`/profile/${artistSong.uploader.id}`}><strong>{artistSong.uploader.name}</strong></Link>
                         </div>
                       </div>
                       <Divider />

@@ -6,9 +6,7 @@ import {
   ADD_AUDIO_ITEM_FAILURE,
   ADD_AUDIO_ITEM_CLEANUP,
   GET_SPECIFIC_USERS,
-  GET_AUDIO_ITEM,
-  DELETE_AUDIO,
-  DELETE_AUDIO_ARTISTS
+  GET_AUDIO_ITEM
 } from '../constants';
 import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 
@@ -81,34 +79,6 @@ export function getAudioItem(authUserId, audioItemId, userApiToken) {
       if(error.response.status === 403) {
         history.push('/dashboard', { withSpinner: true });
         return Promise.reject(error);
-      }
-    });
-  };
-}
-
-export function deleteAudio(audioId, userId, userApiToken, isArtists, artistId) {
-  return dispatch => {
-    return axios.delete(`http://localhost/api/audio/delete/${audioId}`, {
-      headers: {
-        Authorization: `Bearer ${userApiToken}`
-      },
-      data: { userId }
-    }).then(_ => {
-      if(isArtists) {
-        dispatch({ type: DELETE_AUDIO_ARTISTS, audioId, artistId });
-      } else {
-        dispatch({ type: DELETE_AUDIO, payload: audioId });
-      }
-      dispatch({ type: TOGGLE_LOADING_SPINNER });
-    }).catch(error => {
-      if (error.response.status === 401) {
-        performFrontendLogout(dispatch, history, true);
-
-        return;
-      }
-
-      if(error.response.status === 403) {
-        history.push('/dashboard', { withSpinner: true });
       }
     });
   };

@@ -3,14 +3,21 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogAc
 import { Link } from 'react-router-dom';
 import { Edit, Delete } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
-import { deleteAudio } from '../../../state/actions';
+import { deleteAudio } from '../../../state/audio/audio.action';
 import { toggleLoadSpinner } from '../../../state/load/load.actions';
+import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef<unknown, TransitionProps>((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-export default function EditDelete(props) {
+interface Props {
+  audioId: number;
+  userId: number;
+  userApiToken: string;
+  isArtists?: boolean;
+  artistId?: number;
+}
+
+export default function EditDelete(props: Props) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
