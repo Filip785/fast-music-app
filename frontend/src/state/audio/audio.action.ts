@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import history from '../../helpers/history';
 import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 import performFrontendLogout from '../../helpers/performFrontendLogout';
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, LIKE_ITEM_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, LIKE_ITEM_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, GET_PROFILE_DATA } from './audio.constants';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
 import { AudioActionTypes, AudioState, AudioFileActionTypes } from './audio.types';
 
@@ -13,7 +13,7 @@ type ThunkResult<R = Promise<void>> = ThunkAction<R, AudioState, unknown, AudioA
 export function toggleItem(id: number): AudioActionTypes {
   return {
     type: TOGGLE_ITEM,
-    id
+    id: id
   };
 }
 
@@ -100,6 +100,26 @@ export function getAudioItemsForArtists(userId: number, userApiToken: string): T
       });
   
       dispatch({ type: GET_AUDIO_ITEMS_FOR_ARTISTS, payload: response.data.artistAudioItems });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
+    } catch (err) {
+      performFrontendLogout(dispatch, history, true);
+    }
+  };
+}
+
+export function getProfileData(profileId: number, authUserId: number, authUserApiToken: string): ThunkResult  {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`http://localhost/api/user/profile/${profileId}`, {
+        headers: {
+          Authorization: `Bearer ${authUserApiToken}`
+        },
+        params: {
+          authUserId
+        }
+      });
+
+      dispatch({ type: GET_PROFILE_DATA, profileData: response.data.profileData, accessibleItems: response.data.accessibleItems });
       dispatch({ type: TOGGLE_LOADING_SPINNER });
     } catch (err) {
       performFrontendLogout(dispatch, history, true);

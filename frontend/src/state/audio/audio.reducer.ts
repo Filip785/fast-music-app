@@ -1,4 +1,4 @@
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, GET_AUDIO_ITEMS_FOR_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, LIKE_ITEM_ARTISTS } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, GET_AUDIO_ITEMS_FOR_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, LIKE_ITEM_ARTISTS, GET_PROFILE_DATA } from './audio.constants';
 import { AudioState, AudioActionTypes, AudioFileActionTypes, ArtistAudioItem } from './audio.types';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
 
@@ -8,7 +8,8 @@ const initialState: AudioState = {
   fileUpload: {
     musicFile: {},
     musicFileErrors: {}
-  }
+  },
+  profile: {}
 };
 
 export default function audioReducerTs(state = initialState, action: AudioActionTypes | AudioFileActionTypes) {
@@ -91,6 +92,12 @@ export default function audioReducerTs(state = initialState, action: AudioAction
       return {
         ...state,
         audioItemsArtists: action.payload
+      };
+    case GET_PROFILE_DATA:
+      return {
+        ...state,
+        profile: action.profileData,
+        audioItems: action.accessibleItems
       };
     default:
       return state;

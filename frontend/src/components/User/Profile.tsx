@@ -1,18 +1,29 @@
 import React from 'react';
-import { getProfileData, toggleItem } from '../../state/actions';
 import { connect } from 'react-redux';
 import AllSongsList from '../Dashboard/AllSongsList/AllSongsList';
 import { toggleLoadSpinner } from '../../state/load/load.actions';
+import { Profile } from '../../state/audio/audio.types';
 
-const mapStateToProps = state => ({
-  profile: state.audioReducer.profile,
+interface Props {
+  profile: Profile;
+  match: {
+    params: {
+      id: number
+    }
+  }
+}
+
+interface State {}
+
+const mapStateToProps = (state: any) => ({
+  profile: state.audioReducerTs.profile,
 });
 
-class ConnectedProfile extends React.Component {
+class ConnectedProfile extends React.Component<Props, State> {
   render() {
     const { profile } = this.props;
     const { id } = this.props.match.params;
-
+    
     return (
       <>
         <h1>{profile.name}'s Profile</h1>
@@ -29,4 +40,4 @@ class ConnectedProfile extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, { getProfileData, toggleLoadSpinner, toggleItem }) (ConnectedProfile);
+export default connect(mapStateToProps, { toggleLoadSpinner }) (ConnectedProfile);

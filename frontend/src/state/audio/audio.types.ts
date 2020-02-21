@@ -1,4 +1,4 @@
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, LIKE_ITEM_ARTISTS } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, LIKE_ITEM_ARTISTS, GET_PROFILE_DATA } from './audio.constants';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
 
 interface AudioItemUploader {
@@ -45,6 +45,13 @@ export interface ArtistAudioItem {
   audioItems: AudioItem[];
 }
 
+export interface Profile {
+  id?: number;
+  name?: string;
+  accountCreationDate?: string;
+  numberOfUploads?: number;
+}
+
 export interface ToggleItemAction {
   type: typeof TOGGLE_ITEM;
   id: number;
@@ -78,6 +85,12 @@ export interface GetItemArtistSongsAction {
   payload: ArtistAudioItem[];
 }
 
+export interface GetProfileDataAction {
+  type: typeof GET_PROFILE_DATA;
+  profileData: Profile;
+  accessibleItems: AudioItem[];
+}
+
 export interface ToggleFileChangeAction {
   type: typeof TOGGLE_FILE_CHANGE;
   payload: AudioFile;
@@ -96,8 +109,9 @@ export type AudioActionTypes =
   GetAllAudioItemsAction |
   LikeItemAction |
   LikeArtistItemAction |
-  ToggleItemArtistSongsAction |
-  GetItemArtistSongsAction;
+  ToggleItemArtistSongsAction | 
+  GetItemArtistSongsAction | 
+  GetProfileDataAction;
 
 export type AudioFileActionTypes = ToggleFileChangeAction | ToggleFileChangeFileExtensionForbidden | ToggleFileChangeFileExtensionForbiddenEnd;
 
@@ -105,4 +119,5 @@ export type AudioState = {
   audioItems: AudioItem[];
   audioItemsArtists: ArtistAudioItem[];
   fileUpload: FileUpload;
+  profile: Profile;
 }

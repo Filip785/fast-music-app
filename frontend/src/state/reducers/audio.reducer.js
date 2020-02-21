@@ -1,13 +1,11 @@
 import {
-  TOGGLE_ITEM,
   ADD_AUDIO_ITEM,
   ADD_AUDIO_ITEM_FAILURE,
   ADD_AUDIO_ITEM_CLEANUP,
   GET_SPECIFIC_USERS,
   GET_AUDIO_ITEM,
   DELETE_AUDIO,
-  DELETE_AUDIO_ARTISTS,
-  GET_PROFILE_DATA
+  DELETE_AUDIO_ARTISTS
 } from '../constants';
 
 const initialState = {
@@ -19,10 +17,6 @@ const initialState = {
 };
 
 export default function audio(state = initialState, action) {
-  if (action.type === TOGGLE_ITEM) {
-    return { ...state, musicItems: state.musicItems.map(item => item.id === action.payload ? { ...item, toggle: !item.toggle } : item) };
-  }
-
   if (action.type === ADD_AUDIO_ITEM) {
     return { ...state, musicItems: state.musicItems.concat(action.payload) };
   }
@@ -75,10 +69,6 @@ export default function audio(state = initialState, action) {
 
 
     return { ...state, artistAudioItems };
-  }
-
-  if (action.type === GET_PROFILE_DATA) {
-    return { ...state, profile: action.payload.profileData, musicItems: action.payload.accessibleItems };
   }
 
   return state;

@@ -5,18 +5,19 @@ import { Link } from 'react-router-dom';
 import EditDelete from '../EditDelete/EditDelete';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProfileData } from '../../../state/actions';
+import { getProfileData } from '../../../state/audio/audio.action';
 import { toggleLoadSpinner } from '../../../state/load/load.actions';
 import { getAllAudioItems, toggleItem } from '../../../state/audio/audio.action';
 import history from '../../../helpers/history';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { AudioState } from '../../../state/audio/audio.types';
+import { AudioState, AudioItem } from '../../../state/audio/audio.types';
+import { AuthUser } from '../../../state/auth/auth.types';
 
 export default function AllSongsList(props: any) {
   const [dataLoaded, setDataLoaded] = useState(false);
-  const audioItems = useSelector((state: any) => state.audioReducerTs.audioItems);
-  const user = useSelector((state: any) => state.authReducer.user.authUser);
+  const audioItems: AudioItem[] = useSelector((state: any) => state.audioReducerTs.audioItems);
+  const user: AuthUser = useSelector((state: any) => state.authReducer.user.authUser);
   const dispatch = useDispatch<ThunkDispatch<AudioState, null, AnyAction>>();
 
   const { isProfile, profileId } = props;
@@ -27,17 +28,14 @@ export default function AllSongsList(props: any) {
 
   useEffect(() => {
     if (isProfile) {
-      // load profile data
       dispatch(toggleLoadSpinner());
       dispatch(getProfileData(profileId, user.id, user.api_token)).then(() => {
         setDataLoaded(true);
       });
-    } else {
-      // load dashboard 'all songs' data      
+    } else {     
       if (!props.location.state) {
         dispatch(toggleLoadSpinner());
       } else {
-        // clear location state history
         history.replace({ pathname: '/dashboard', state: null });
       }
       
