@@ -21,7 +21,7 @@ interface State {
 }
 
 const mapStateToProps = (state: any) => ({
-  user: state.authReducer.user.authUser,
+  user: state.authReducerTs.user.authUser,
   audioItemsArtists: state.audioReducerTs.audioItemsArtists
 });
 

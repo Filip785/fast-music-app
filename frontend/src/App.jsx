@@ -18,7 +18,7 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
-import { doLogout } from './state/actions';
+import { doLogout } from './state/auth/auth.action';
 import Profile from './components/User/Profile';
 
 const styles = theme => ({
@@ -35,7 +35,7 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  auth: state.authReducer,
+  auth: state.authReducerTs,
   isLoading: state.loadReducer.isLoading
 });
 

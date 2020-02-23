@@ -15,7 +15,7 @@ interface CardProps {
   artistId?: number;
 }
 
-const LikeItem: React.FunctionComponent<CardProps> = (props: CardProps): React.ReactElement => {
+const LikeItem: React.FC<CardProps> = (props: CardProps): React.ReactElement => {
   const dispatch = useDispatch();
   
   return (
