@@ -35,7 +35,7 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  auth: state.authReducerTs,
+  auth: state.authReducer,
   isLoading: state.loadReducer.isLoading
 });
 

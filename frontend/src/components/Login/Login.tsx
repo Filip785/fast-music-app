@@ -26,8 +26,8 @@ interface State {
 }
 
 const mapStateToProps = (state: any) => ({
-  registered: state.authReducerTs.registered,
-  loginError: state.authReducerTs.loginError,
+  registered: state.authReducer.registered,
+  loginError: state.authReducer.loginError,
 });
 
 class ConnectedLogin extends React.Component<Props, State> {

@@ -3,10 +3,10 @@ import artistReducer from './artist.reducer';
 import audioReducer from './audio.reducer';
 import audioReducerTs from '../audio/audio.reducer';
 import loadReducer from '../load/load.reducer';
-import authReducerTs from '../auth/auth.reducer';
+import authReducer from '../auth/auth.reducer';
 
 const rootReducer = combineReducers({
-  authReducerTs,
+  authReducer,
   audioReducer,
   artistReducer,
   loadReducer,

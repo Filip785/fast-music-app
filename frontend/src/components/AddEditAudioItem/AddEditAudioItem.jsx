@@ -32,7 +32,7 @@ import {
 import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 const mapStateToProps = state => ({
-  user: state.authReducerTs.user.authUser,
+  user: state.authReducer.user.authUser,
   artists: state.artistReducer.artists,
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
   specificUsers: state.audioReducer.specificUsers,
