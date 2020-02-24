@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import history from '../../helpers/history';
 import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 import performFrontendLogout from '../../helpers/performFrontendLogout';
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, LIKE_ITEM_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, LIKE_ITEM_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS, GET_SPECIFIC_USERS, ADD_AUDIO_ITEM_CLEANUP } from './audio.constants';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
 import { AudioActionTypes, AudioState, AudioFileActionTypes } from './audio.types';
 
@@ -158,5 +158,27 @@ export function deleteAudio(audioId: number, userId: number, userApiToken: strin
         history.push('/dashboard', { withSpinner: true });
       }
     }
+  };
+}
+
+export function getSpecificUsers(exceptUserId: number, userApiToken: string): ThunkResult {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`http://localhost/api/user/specific/${exceptUserId}`, {
+        headers: {
+          Authorization: `Bearer ${userApiToken}`
+        }
+      });
+      
+      dispatch({ type: GET_SPECIFIC_USERS, payload: response.data.specificUsers });
+    } catch (err) {
+      performFrontendLogout(dispatch, history, false);
+    }
+  };
+}
+
+export function cleanupAddFilePage(): AudioActionTypes {
+  return {
+    type: ADD_AUDIO_ITEM_CLEANUP
   };
 }

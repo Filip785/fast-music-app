@@ -7,7 +7,7 @@ export interface RegisterErrors {
   password: string;
 }
 
-export interface AuthUser {
+export interface User {
   id: number;
   name: string;
   username: string;
@@ -15,14 +15,14 @@ export interface AuthUser {
   api_token: string;
 }
 
-export interface AuthUserState {
+export interface UserState {
   loggedIn: { status: boolean, fromAuth: boolean };
-  authUser?: AuthUser;
+  authUser?: User;
 }
 
 export interface AttemptLoginAction {
   type: typeof ATTEMPT_LOGIN;
-  payload: AuthUser;
+  payload: User;
 }
 
 export interface AttemptLoginFailureAction {
@@ -54,7 +54,7 @@ export type AuthActionTypes = AttemptLoginAction |
                               DoLogoutAction;
 
 export interface AuthState {
-  user: AuthUserState;
+  user: UserState;
   registered: boolean;
   loginError: boolean;
   registerErrors: RegisterErrors

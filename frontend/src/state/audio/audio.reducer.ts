@@ -1,4 +1,17 @@
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, GET_AUDIO_ITEMS_FOR_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, LIKE_ITEM_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS } from './audio.constants';
+import { 
+  TOGGLE_ITEM, 
+  GET_ALL_AUDIO_ITEMS, 
+  LIKE_ITEM, 
+  GET_AUDIO_ITEMS_FOR_ARTISTS, 
+  TOGGLE_ITEM_ARTIST_SONGS, 
+  LIKE_ITEM_ARTISTS, 
+  GET_PROFILE_DATA, 
+  DELETE_AUDIO, 
+  DELETE_AUDIO_ARTISTS, 
+  GET_SPECIFIC_USERS,
+  ADD_AUDIO_ITEM_FAILURE,
+  ADD_AUDIO_ITEM_CLEANUP
+} from './audio.constants';
 import { AudioState, AudioActionTypes, AudioFileActionTypes, ArtistAudioItem } from './audio.types';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
 
@@ -9,7 +22,8 @@ const initialState: AudioState = {
     musicFile: {},
     musicFileErrors: {}
   },
-  profile: {}
+  profile: {},
+  specificUsers: []
 };
 
 export default function audioReducerTs(state = initialState, action: AudioActionTypes | AudioFileActionTypes) {
@@ -130,9 +144,29 @@ export default function audioReducerTs(state = initialState, action: AudioAction
       // where length === 0
       audioItemsArtists = audioItemsArtists.filter((item, index) => item.audioItems.length !== 0);
 
-
       return { ...state, audioItemsArtists };
     }
+    case GET_SPECIFIC_USERS:
+      return {
+        ...state,
+        specificUsers: action.payload
+      };
+    case ADD_AUDIO_ITEM_FAILURE:
+      return {
+        ...state,
+        fileUpload: {
+          ...state.fileUpload,
+          musicFileErrors: action.payload
+        }
+      };
+    case ADD_AUDIO_ITEM_CLEANUP:
+      return {
+        ...state,
+        fileUpload: {
+          musicFile: {},
+          musicFileErrors: {}
+        }
+      };
     default:
       return state;
   }

@@ -18,13 +18,10 @@ import {
   FormControl
 } from '@material-ui/core';
 import {
-  //getArtists,
-  //toggleAddArtistDialog,
   addOrEditAudioItem,
-  cleanupAddFilePage,
-  getSpecificUsers,
   getAudioItem
 } from '../../state/actions';
+import { getSpecificUsers, cleanupAddFilePage } from '../../state/audio/audio.action';
 import { getArtists, toggleAddArtistDialog } from '../../state/artist/artist.action';
 import {
   toggleFileChange,
@@ -36,7 +33,7 @@ const mapStateToProps = state => ({
   user: state.authReducer.user.authUser,
   artists: state.artistReducer.artists,
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
-  specificUsers: state.audioReducer.specificUsers,
+  specificUsers: state.audioReducerTs.specificUsers,
   musicItem: state.audioReducer.musicItem,
   fileUpload: state.audioReducerTs.fileUpload
 });
@@ -59,16 +56,16 @@ class ConnectedAddEditAudioItem extends React.Component {
     this.selectedUsers = [];
     this.defaultUsers = [];
 
-    this.handleSubmitEv = this.handleSubmit.bind(this);
-    this.handleChangeTitleEv = this.handleChangeTitle.bind(this);
-    this.handleChangeArtistNameEv = this.handleChangeArtistName.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChangeTitle = this.handleChangeTitle.bind(this);
+    this.handleChangeArtistName = this.handleChangeArtistName.bind(this);
 
-    this.handleToggleDialogEv = this.handleToggleDialog.bind(this);
-    this.handleFileChangeEv = this.handleFileChange.bind(this);
-    this.handleCloseFileNotAllowedPromptEv = this.handleCloseFileNotAllowedPrompt.bind(this);
-    this.handleBlurArtistNameEv = this.handleBlurArtistName.bind(this);
-    this.handleVisibilityChangeEv = this.handleVisibilityChange.bind(this);
-    this.handleAllowedUserEv = this.handleAllowedUser.bind(this);
+    this.handleToggleDialog = this.handleToggleDialog.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
+    this.handleCloseFileNotAllowedPrompt = this.handleCloseFileNotAllowedPrompt.bind(this);
+    this.handleBlurArtistName = this.handleBlurArtistName.bind(this);
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+    this.handleAllowedUser = this.handleAllowedUser.bind(this);
   }
 
   setupEditPage(musicItem) {
@@ -120,7 +117,7 @@ class ConnectedAddEditAudioItem extends React.Component {
 
   handleSubmit() {
     const { title, visibility } = this.state;
-    const { musicFile, type, musicItem } = this.props;
+    const { fileUpload, type, musicItem } = this.props;
 
     this.props.toggleLoadSpinner();
 
@@ -135,8 +132,8 @@ class ConnectedAddEditAudioItem extends React.Component {
     this.props.addOrEditAudioItem({
       method, action
     }, title, this.selectedArtist.id, {
-      fileName: musicFile.name,
-      fileUpload: musicFile.fileUpload
+      fileName: fileUpload.musicFile.name,
+      fileUpload: fileUpload.musicFile.fileResult
     }, this.props.user.id, visibility, this.selectedUsers.map(x => x.id), this.props.user.api_token);
   }
 
@@ -217,12 +214,12 @@ class ConnectedAddEditAudioItem extends React.Component {
     return (
       <Container maxWidth="sm">
         {dataLoaded && <Paper className="paperPadding">
-          <Grid container spacing={8} jus1tify="center">
+          <Grid container spacing={8} justify="center">
             <h1>{type === 'add' ? ('Add new song') : ('Edit this song')}</h1>
           </Grid>
           <Grid container spacing={8} alignItems="flex-end">
             <Grid item md={true} sm={true} xs={true}>
-              <TextField id="title" label="Song Title" type="text" error={Boolean(musicFileErrors.songTitle)} helperText={musicFileErrors.songTitle} value={title} onChange={this.handleChangeTitleEv} fullWidth autoFocus />
+              <TextField id="title" label="Song Title" type="text" error={Boolean(musicFileErrors.songTitle)} helperText={musicFileErrors.songTitle} value={title} onChange={this.handleChangeTitle} fullWidth autoFocus />
             </Grid>
           </Grid>
           <Grid container spacing={8}>
@@ -232,17 +229,17 @@ class ConnectedAddEditAudioItem extends React.Component {
                 style={{ width: '100%' }}
                 options={artists}
                 getOptionLabel={option => option.artistName}
-                onChange={this.handleChangeArtistNameEv}
-                onBlur={this.handleBlurArtistNameEv}
+                onChange={this.handleChangeArtistName}
+                onBlur={this.handleBlurArtistName}
                 renderInput={params => {
                   // temporary fix, probably bug in material-ui (TextField not updating value)
                   params.inputProps.value = artistName;
                   return (
-                    <TextField value={this.state.artistName} {...params} error={Boolean(musicFileErrors.artistId)} helperText={musicFileErrors.artistId} label="Artist Name" name="artistName" margin="normal" fullWidth onChange={this.handleChangeArtistNameEv} />
+                    <TextField value={this.state.artistName} {...params} error={Boolean(musicFileErrors.artistId)} helperText={musicFileErrors.artistId} label="Artist Name" name="artistName" margin="normal" fullWidth onChange={this.handleChangeArtistName} />
                   );
                 }}
               />
-              <Button color="primary" onClick={this.handleToggleDialogEv}>Add New Artist</Button>
+              <Button color="primary" onClick={this.handleToggleDialog}>Add New Artist</Button>
             </Grid>
           </Grid>
           {type !== 'edit' && <Grid container spacing={8} alignItems="flex-end">
@@ -253,7 +250,7 @@ class ConnectedAddEditAudioItem extends React.Component {
                   type="file"
                   id="icon-button-file"
                   style={{ display: 'none', }}
-                  onChange={this.handleFileChangeEv}
+                  onChange={this.handleFileChange}
                 />
                 <label htmlFor="icon-button-file">
                   <Button
@@ -284,7 +281,7 @@ class ConnectedAddEditAudioItem extends React.Component {
               <FormControl style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                 <FormLabel style={{ fontWeight: 'bold' }} component="legend">This item will be visible to:</FormLabel>
 
-                <RadioGroup style={{ display: 'flex', flexDirection: 'row' }} value={visibility} defaultValue={0} onChange={this.handleVisibilityChangeEv}>
+                <RadioGroup style={{ display: 'flex', flexDirection: 'row' }} value={visibility} defaultValue={0} onChange={this.handleVisibilityChange}>
                   <FormControlLabel
                     value="0"
                     control={<Radio checked={visibility === 0} color="primary" />}
@@ -311,7 +308,7 @@ class ConnectedAddEditAudioItem extends React.Component {
                 id="specific-users"
                 options={specificUsers}
                 getOptionLabel={user => user.username}
-                onChange={this.handleAllowedUserEv}
+                onChange={this.handleAllowedUser}
                 defaultValue={type === 'add' ? [] : this.defaultUsers}
                 renderInput={params => (
                   <TextField
@@ -328,14 +325,14 @@ class ConnectedAddEditAudioItem extends React.Component {
           </Grid>
 
           <Grid container justify="center" style={{ marginTop: '25px' }}>
-            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleSubmitEv}>
+            <Button variant="outlined" color="primary" style={{ textTransform: "none" }} onClick={this.handleSubmit}>
               {type === 'add' ? ('Add') : ('Edit')}
             </Button>
           </Grid>
         </Paper>}
 
-        <AddArtistDialog handleToggleDialogEv={this.handleToggleDialogEv} handleChangeArtistNameEv={this.handleChangeArtistNameEv} artistName={artistName} userApiToken={user.api_token} onBlurAddItemForm={this.handleBlurArtistNameEv} />
-        <Snackbar open={musicFileErrors.fileExtensionNotAllowed} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPromptEv}>
+        <AddArtistDialog handleToggleDialog={this.handleToggleDialog} handleChangeArtistName={this.handleChangeArtistName} artistName={artistName} userApiToken={user.api_token} onBlurAddItemForm={this.handleBlurArtistName} />
+        <Snackbar open={musicFileErrors.fileExtensionNotAllowed} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPrompt}>
           <Alert severity="error">
             Please only upload .mp3 and .wav files! Thanks.
           </Alert>

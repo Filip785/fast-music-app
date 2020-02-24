@@ -4,14 +4,14 @@ import { ListItem, ListItemText, Collapse, List, Divider } from '@material-ui/co
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import LikeItem from '../LikeItem/LikeItem';
 import EditDelete from '../EditDelete/EditDelete';
-import { AuthUser } from '../../../state/auth/auth.types';
+import { User } from '../../../state/auth/auth.types';
 import { toggleItemArtistSongs, getAudioItemsForArtists } from '../../../state/audio/audio.action';
 import { AudioActionTypes, ArtistAudioItem } from '../../../state/audio/audio.types';
 import { Link } from 'react-router-dom';
 
 interface Props {
   audioItemsArtists: ArtistAudioItem[];
-  user: AuthUser;
+  user: User;
   toggleItemArtistSongs: (value: number) => AudioActionTypes;
   getAudioItemsForArtists: (userId: number, userApiToken: string) => Promise<void>;
 }

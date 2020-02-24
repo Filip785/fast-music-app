@@ -1,5 +1,6 @@
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, LIKE_ITEM_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, LIKE_ITEM_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS, GET_SPECIFIC_USERS, ADD_AUDIO_ITEM_FAILURE, ADD_AUDIO_ITEM_CLEANUP } from './audio.constants';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
+import { User } from '../auth/auth.types';
 
 interface AudioItemUploader {
   id: number;
@@ -115,6 +116,20 @@ export interface ToggleFileChangeFileExtensionForbiddenEnd {
   type: typeof FILE_EXTENSION_FORBIDDEN_END;
 }
 
+export interface GetSpecificUsersAction {
+  type: typeof GET_SPECIFIC_USERS;
+  payload: User[];
+}
+
+export interface AddAudioItemFailureAction {
+  type: typeof ADD_AUDIO_ITEM_FAILURE;
+  payload: AudioFileErrors;
+}
+
+export interface AddAudioItemCleanupAction {
+  type: typeof ADD_AUDIO_ITEM_CLEANUP;
+}
+
 export type AudioActionTypes =
   ToggleItemAction |
   GetAllAudioItemsAction |
@@ -124,7 +139,10 @@ export type AudioActionTypes =
   GetItemArtistSongsAction | 
   GetProfileDataAction |
   DeleteAudioAction |
-  DeleteAudioArtistsAction;
+  DeleteAudioArtistsAction |
+  GetSpecificUsersAction |
+  AddAudioItemFailureAction |
+  AddAudioItemCleanupAction;
 
 export type AudioFileActionTypes = ToggleFileChangeAction | ToggleFileChangeFileExtensionForbidden | ToggleFileChangeFileExtensionForbiddenEnd;
 
@@ -133,4 +151,5 @@ export type AudioState = {
   audioItemsArtists: ArtistAudioItem[];
   fileUpload: FileUpload;
   profile: Profile;
+  specificUsers: User[];
 }

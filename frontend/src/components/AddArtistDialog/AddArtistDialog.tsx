@@ -12,17 +12,32 @@ import {
 import { toggleAddArtistDialog, createArtist } from '../../state/artist/artist.action';
 import { toggleLoadSpinner } from '../../state/load/load.actions';
 
-const mapStateToProps = state => ({
+interface Props {
+  artistName: string;
+  userApiToken: string;
+  addArtistDialogOpen: boolean;
+  addArtistFailure: { message?: string };
+  withNotice: boolean;
+  handleChangeArtistName: () => void;
+  handleToggleDialog: () => void;
+  onBlurAddItemForm: () => void;
+  toggleLoadSpinner: () => void;
+  createArtist: (artistName: string, userApiToken: string, onBlurAddItemForm: () => void) => void;
+}
+
+interface State {}
+
+const mapStateToProps = (state: any) => ({
   addArtistDialogOpen: state.artistReducer.addArtistDialogOpen,
   addArtistFailure: state.artistReducer.addArtistFailure,
   withNotice: state.artistReducer.withNotice,
 });
 
-class ConnectedAddArtistDialog extends React.Component {
-  constructor(props) {
+class ConnectedAddArtistDialog extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     
-    this.handleAddArtistEv = this.handleAddArtist.bind(this);
+    this.handleAddArtist = this.handleAddArtist.bind(this);
   }
 
   handleAddArtist() {
@@ -32,6 +47,7 @@ class ConnectedAddArtistDialog extends React.Component {
 
   render() {
     const { addArtistDialogOpen, artistName, addArtistFailure, withNotice } = this.props;
+    
     return (
       <Dialog open={addArtistDialogOpen} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Add new artist</DialogTitle>
@@ -49,15 +65,15 @@ class ConnectedAddArtistDialog extends React.Component {
             value={artistName}
             error={Boolean(addArtistFailure.message)}
             helperText={addArtistFailure.message}
-            onChange={this.props.handleChangeArtistNameEv}
+            onChange={this.props.handleChangeArtistName}
             fullWidth
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleToggleDialogEv} color="primary">
+          <Button onClick={this.props.handleToggleDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={this.handleAddArtistEv} color="primary">
+          <Button onClick={this.handleAddArtist} color="primary">
             Add
           </Button>
         </DialogActions>

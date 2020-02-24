@@ -12,12 +12,12 @@ import history from '../../../helpers/history';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { AudioState, AudioItem } from '../../../state/audio/audio.types';
-import { AuthUser } from '../../../state/auth/auth.types';
+import { User } from '../../../state/auth/auth.types';
 
 export default function AllSongsList(props: any) {
   const [dataLoaded, setDataLoaded] = useState(false);
   const audioItems: AudioItem[] = useSelector((state: any) => state.audioReducerTs.audioItems);
-  const user: AuthUser = useSelector((state: any) => state.authReducer.user.authUser);
+  const user: User = useSelector((state: any) => state.authReducer.user.authUser);
   const dispatch = useDispatch<ThunkDispatch<AudioState, null, AnyAction>>();
 
   const { isProfile, profileId } = props;
