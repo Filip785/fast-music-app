@@ -10,7 +10,9 @@ import {
   DELETE_AUDIO_ARTISTS, 
   GET_SPECIFIC_USERS,
   ADD_AUDIO_ITEM_FAILURE,
-  ADD_AUDIO_ITEM_CLEANUP
+  ADD_AUDIO_ITEM_CLEANUP,
+  GET_AUDIO_ITEM,
+  ADD_AUDIO_ITEM
 } from './audio.constants';
 import { AudioState, AudioActionTypes, AudioFileActionTypes, ArtistAudioItem } from './audio.types';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
@@ -23,10 +25,11 @@ const initialState: AudioState = {
     musicFileErrors: {}
   },
   profile: {},
-  specificUsers: []
+  specificUsers: [],
+  musicItem: { songTitle: '', artistId: 0, uploaderId: 0, visibility: 0, audioUrl: '', artist: { id: 0, artistName: '' }, allowed_users: [] }
 };
 
-export default function audioReducerTs(state = initialState, action: AudioActionTypes | AudioFileActionTypes) {
+export default function audioReducerTs(state = initialState, action: AudioActionTypes | AudioFileActionTypes) : AudioState {
   switch (action.type) {
     case TOGGLE_ITEM:
       return {
@@ -166,6 +169,16 @@ export default function audioReducerTs(state = initialState, action: AudioAction
           musicFile: {},
           musicFileErrors: {}
         }
+      };
+    case GET_AUDIO_ITEM:
+      return {
+        ...state,
+        musicItem: action.payload
+      };
+    case ADD_AUDIO_ITEM:
+      return {
+        ...state,
+        audioItems: state.audioItems.concat(action.audioItem)
       };
     default:
       return state;

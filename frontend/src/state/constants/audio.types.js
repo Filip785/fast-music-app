@@ -1,2 +1,0 @@
-export const ADD_AUDIO_ITEM = 'ADD_AUDIO_ITEM';
-export const GET_AUDIO_ITEM = 'GET_AUDIO_ITEM';

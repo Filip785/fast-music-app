@@ -73,7 +73,6 @@ class AudioItemApiController extends Controller
 
 		$audioItem->songTitle = $data['songTitle'];
 		$audioItem->artistId = $data['artistId'];
-		$audioItem->audioUrl = $data['fileName'];
 		$audioItem->uploaderId = $data['uploaderId'];
 		$audioItem->visibility = $data['visibility'];
 

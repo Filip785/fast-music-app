@@ -11,18 +11,19 @@ import {
 } from '@material-ui/core';
 import { toggleAddArtistDialog, createArtist } from '../../state/artist/artist.action';
 import { toggleLoadSpinner } from '../../state/load/load.actions';
+import { ArtistErrors, ArtistBlurType } from '../../state/artist/artist.types';
 
 interface Props {
   artistName: string;
   userApiToken: string;
   addArtistDialogOpen: boolean;
-  addArtistFailure: { message?: string };
+  addArtistFailure: ArtistErrors;
   withNotice: boolean;
-  handleChangeArtistName: () => void;
-  handleToggleDialog: () => void;
-  onBlurAddItemForm: () => void;
+  handleChangeArtistName: (event: React.ChangeEvent<HTMLInputElement>, value?: { artistName: string }) => void;
+  handleToggleDialog: (params: { withNotice: boolean }) => void;
+  onBlurAddItemForm: (target: ArtistBlurType) => void;
   toggleLoadSpinner: () => void;
-  createArtist: (artistName: string, userApiToken: string, onBlurAddItemForm: () => void) => void;
+  createArtist: (artistName: string, userApiToken: string, onBlurAddItemForm: (target: ArtistBlurType) => void) => void;
 }
 
 interface State {}
@@ -70,7 +71,7 @@ class ConnectedAddArtistDialog extends React.Component<Props, State> {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleToggleDialog} color="primary">
+          <Button onClick={() => this.props.handleToggleDialog({ withNotice: false })} color="primary">
             Cancel
           </Button>
           <Button onClick={this.handleAddArtist} color="primary">

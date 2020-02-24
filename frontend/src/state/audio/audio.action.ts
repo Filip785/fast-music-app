@@ -4,9 +4,10 @@ import { Dispatch } from 'redux';
 import history from '../../helpers/history';
 import { TOGGLE_LOADING_SPINNER } from '../load/load.constants';
 import performFrontendLogout from '../../helpers/performFrontendLogout';
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, LIKE_ITEM_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS, GET_SPECIFIC_USERS, ADD_AUDIO_ITEM_CLEANUP } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, LIKE_ITEM_ARTISTS, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS, GET_SPECIFIC_USERS, ADD_AUDIO_ITEM_CLEANUP, GET_AUDIO_ITEM, ADD_AUDIO_ITEM_FAILURE, ADD_AUDIO_ITEM } from './audio.constants';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
-import { AudioActionTypes, AudioState, AudioFileActionTypes } from './audio.types';
+import { AudioActionTypes, AudioState, AudioFileActionTypes, FileUploadPage } from './audio.types';
+import { User } from '../auth/auth.types';
 
 type ThunkResult<R = Promise<void>> = ThunkAction<R, AudioState, unknown, AudioActionTypes>;
 
@@ -180,5 +181,72 @@ export function getSpecificUsers(exceptUserId: number, userApiToken: string): Th
 export function cleanupAddFilePage(): AudioActionTypes {
   return {
     type: ADD_AUDIO_ITEM_CLEANUP
+  };
+}
+
+export function getAudioItem(authUserId: number, audioItemId: number, userApiToken: string): ThunkResult {
+  return async (dispatch: Dispatch) => {
+    try {
+      const response = await axios.get(`http://localhost/api/audio/details/${audioItemId}`, {
+        headers: {
+          Authorization: `Bearer ${userApiToken}`
+        },
+        params: {
+          authUserId
+        }
+      });
+
+      dispatch({ type: GET_AUDIO_ITEM, payload: response.data.audioItem });
+    } catch (err) {
+      if(err.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
+      }
+
+      if(err.response.status === 403) {
+        history.push('/dashboard', { withSpinner: true });
+        return Promise.reject(err);
+      }
+    }
+  };
+}
+
+export function addOrEditAudioItem(requestData: { action: string, method: string }, songTitle: string, artistId: number, fileUploadData: FileUploadPage, uploaderId: number, visibility: number, allowedUsers: User[], userApiToken: string): ThunkResult {
+  return async (dispatch: Dispatch) => {
+    try {
+      let methodType = axios.post;
+
+      if(requestData.method === 'put') {
+        methodType = axios.put;
+      }
+
+      const { fileName, fileUpload } = fileUploadData;
+
+      const allowedIds = allowedUsers.map(user => user.id);
+
+      const response = await methodType(`http://localhost/api/audio${requestData.action}`, {
+        songTitle,
+        artistId,
+        fileName,
+        fileUpload,
+        uploaderId,
+        visibility,
+        allowedUsers: allowedIds
+      }, {
+        headers: {
+          Authorization: `Bearer ${userApiToken}`
+        }
+      });
+      dispatch({ type: ADD_AUDIO_ITEM, payload: response.data.audioItem });
+      history.push('/dashboard', { spinnerRunning: true });
+    } catch (err) {
+      if (err.response.status === 401) {
+        performFrontendLogout(dispatch, history, true);
+
+        return;
+      }
+
+      dispatch({ type: ADD_AUDIO_ITEM_FAILURE, payload: err.response.data.errors });
+      dispatch({ type: TOGGLE_LOADING_SPINNER });
+    }
   };
 }

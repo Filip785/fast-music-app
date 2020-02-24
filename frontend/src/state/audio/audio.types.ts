@@ -1,6 +1,7 @@
-import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, LIKE_ITEM_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS, GET_SPECIFIC_USERS, ADD_AUDIO_ITEM_FAILURE, ADD_AUDIO_ITEM_CLEANUP } from './audio.constants';
+import { TOGGLE_ITEM, GET_ALL_AUDIO_ITEMS, LIKE_ITEM, TOGGLE_ITEM_ARTIST_SONGS, GET_AUDIO_ITEMS_FOR_ARTISTS, LIKE_ITEM_ARTISTS, GET_PROFILE_DATA, DELETE_AUDIO, DELETE_AUDIO_ARTISTS, GET_SPECIFIC_USERS, ADD_AUDIO_ITEM_FAILURE, ADD_AUDIO_ITEM_CLEANUP, GET_AUDIO_ITEM, ADD_AUDIO_ITEM } from './audio.constants';
 import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_END } from './audio.file.constants';
 import { User } from '../auth/auth.types';
+import { Artist } from '../artist/artist.types';
 
 interface AudioItemUploader {
   id: number;
@@ -18,6 +19,11 @@ export interface AudioItem {
   uploader: AudioItemUploader;
 }
 
+export interface FileUploadPage {
+  fileName: string;
+  fileUpload: string | ArrayBuffer;
+}
+
 export interface AudioFile {
   name?: string;
   size?: string;
@@ -29,7 +35,7 @@ export interface AudioFile {
 export interface AudioFileErrors {
   songTitle?: string;
   artistId?: string;
-  fileUpload?: string;
+  fileUpload?: string | boolean;
   allowedUsers?: string;
   fileExtensionNotAllowed?: boolean;
 }
@@ -37,6 +43,17 @@ export interface AudioFileErrors {
 export interface FileUpload {
   musicFile: AudioFile;
   musicFileErrors: AudioFileErrors;
+}
+
+export interface ItemFileUpload {
+  id?: number;
+  songTitle: string;
+  artistId: number;
+  uploaderId: number;
+  visibility: number;
+  audioUrl: string;
+  artist: Artist;
+  allowed_users: User[];
 }
 
 export interface ArtistAudioItem {
@@ -130,6 +147,16 @@ export interface AddAudioItemCleanupAction {
   type: typeof ADD_AUDIO_ITEM_CLEANUP;
 }
 
+export interface GetAudioItemAction {
+  type: typeof GET_AUDIO_ITEM;
+  payload: ItemFileUpload;
+}
+
+export interface AddAudioItemAction {
+  type: typeof ADD_AUDIO_ITEM;
+  audioItem: AudioItem;
+}
+
 export type AudioActionTypes =
   ToggleItemAction |
   GetAllAudioItemsAction |
@@ -142,7 +169,9 @@ export type AudioActionTypes =
   DeleteAudioArtistsAction |
   GetSpecificUsersAction |
   AddAudioItemFailureAction |
-  AddAudioItemCleanupAction;
+  AddAudioItemCleanupAction |
+  GetAudioItemAction |
+  AddAudioItemAction;
 
 export type AudioFileActionTypes = ToggleFileChangeAction | ToggleFileChangeFileExtensionForbidden | ToggleFileChangeFileExtensionForbiddenEnd;
 
@@ -152,4 +181,5 @@ export type AudioState = {
   fileUpload: FileUpload;
   profile: Profile;
   specificUsers: User[];
+  musicItem: ItemFileUpload;
 }

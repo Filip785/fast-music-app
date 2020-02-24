@@ -1,8 +1,16 @@
 import { GET_ALL_ARTISTS, TOGGLE_ADD_ARTIST_DIALOG, CREATE_ARTIST, ADD_ARTIST_FAILURE } from "./artist.constants";
 
+export interface ArtistErrors {
+  message?: string;
+}
+
+export interface ArtistBlurType {
+  target: { value: string }
+};
+
 export interface Artist {
-  id: number;
-  artistName: string;
+  id?: number;
+  artistName?: string;
 }
 
 export interface GetAllArtistsAction {
@@ -34,5 +42,5 @@ export interface ArtistState {
   artists: Artist[];
   addArtistDialogOpen: boolean;
   withNotice: boolean;
-  addArtistFailure: { message?: string };
+  addArtistFailure: ArtistErrors;
 }

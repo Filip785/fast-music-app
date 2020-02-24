@@ -1,5 +1,5 @@
 import { ThunkAction } from "redux-thunk";
-import { ArtistState, ArtistActionTypes } from "./artist.types";
+import { ArtistState, ArtistActionTypes, ArtistBlurType } from "./artist.types";
 import { TOGGLE_ADD_ARTIST_DIALOG, GET_ALL_ARTISTS, CREATE_ARTIST, ADD_ARTIST_FAILURE } from "./artist.constants";
 import { Dispatch } from "redux";
 import performFrontendLogout from "../../helpers/performFrontendLogout";
@@ -8,10 +8,6 @@ import axios from 'axios';
 import { TOGGLE_LOADING_SPINNER } from "../load/load.constants";
 
 type ThunkResult<R = Promise<void>> = ThunkAction<R, ArtistState, unknown, ArtistActionTypes>;
-
-interface BlurType {
-  target: {value: string}
-};
 
 export function getArtists(userApiToken: string): ThunkResult {
   return async (dispatch: Dispatch) => {
@@ -29,7 +25,7 @@ export function getArtists(userApiToken: string): ThunkResult {
   };
 }
 
-export function createArtist(artistName: string, userApiToken: string, onBlurAddItemForm: (target: BlurType) => void): ThunkResult {
+export function createArtist(artistName: string, userApiToken: string, onBlurAddItemForm: (target: ArtistBlurType) => void): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
       const response = await axios.post('http://localhost/api/artist/create', {
