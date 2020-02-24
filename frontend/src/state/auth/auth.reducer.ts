@@ -15,7 +15,7 @@ const initialState: AuthState = {
   }
 };
 
-export default function authReducer(state = initialState, action: AuthActionTypes) {
+export default function authReducer(state = initialState, action: AuthActionTypes): AuthState {
   switch (action.type) {
     case ATTEMPT_LOGIN:
       return {

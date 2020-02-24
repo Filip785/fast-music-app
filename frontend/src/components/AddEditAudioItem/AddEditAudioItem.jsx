@@ -18,13 +18,14 @@ import {
   FormControl
 } from '@material-ui/core';
 import {
-  getArtists,
-  toggleAddArtistDialog,
+  //getArtists,
+  //toggleAddArtistDialog,
   addOrEditAudioItem,
   cleanupAddFilePage,
   getSpecificUsers,
   getAudioItem
 } from '../../state/actions';
+import { getArtists, toggleAddArtistDialog } from '../../state/artist/artist.action';
 import {
   toggleFileChange,
   closeFileNotAllowedPrompt

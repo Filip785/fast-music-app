@@ -9,7 +9,7 @@ import {
   Button, 
   TextField 
 } from '@material-ui/core';
-import { toggleAddArtistDialog, createArtist } from '../../state/actions';
+import { toggleAddArtistDialog, createArtist } from '../../state/artist/artist.action';
 import { toggleLoadSpinner } from '../../state/load/load.actions';
 
 const mapStateToProps = state => ({

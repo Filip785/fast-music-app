@@ -54,7 +54,7 @@ export type AuthActionTypes = AttemptLoginAction |
                               DoLogoutAction;
 
 export interface AuthState {
-  user: AuthUserState,
+  user: AuthUserState;
   registered: boolean;
   loginError: boolean;
   registerErrors: RegisterErrors

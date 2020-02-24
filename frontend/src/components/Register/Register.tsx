@@ -12,7 +12,7 @@ import { toggleLoadSpinner } from '../../state/load/load.actions';
 import { RegisterErrors } from '../../state/auth/auth.types';
 
 interface Props {
-  errors: RegisterErrors,
+  errors: RegisterErrors;
   attemptRegister: (name: string, username: string, email: string, password: string) => void;
   toggleLoadSpinner: () => void;
 }
