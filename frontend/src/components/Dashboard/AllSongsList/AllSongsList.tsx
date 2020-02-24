@@ -13,8 +13,15 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { AudioState, AudioItem } from '../../../state/audio/audio.types';
 import { User } from '../../../state/auth/auth.types';
+import { History } from 'history';
 
-export default function AllSongsList(props: any) {
+interface Props {
+  history: History<History.PoorMansUnknown> | { location: { state: {} } };
+  profileId?: number;
+  isProfile?: boolean;
+}
+
+export default function AllSongsList(props: Props) {
   const [dataLoaded, setDataLoaded] = useState(false);
   const audioItems: AudioItem[] = useSelector((state: any) => state.audioReducerTs.audioItems);
   const user: User = useSelector((state: any) => state.authReducer.user.authUser);
@@ -29,11 +36,11 @@ export default function AllSongsList(props: any) {
   useEffect(() => {
     if (isProfile) {
       dispatch(toggleLoadSpinner());
-      dispatch(getProfileData(profileId, user.id, user.api_token)).then(() => {
+      dispatch(getProfileData(profileId!, user.id, user.api_token)).then(() => {
         setDataLoaded(true);
       });
     } else {     
-      if (!props.location.state) {
+      if (!history.location.state) {
         dispatch(toggleLoadSpinner());
       } else {
         history.replace({ pathname: '/dashboard', state: null });
@@ -43,7 +50,7 @@ export default function AllSongsList(props: any) {
         setDataLoaded(true);
       });
     }
-  }, [profileId, user.id, user.api_token, dispatch, isProfile, props.location.state]);
+  }, [profileId, user.id, user.api_token, dispatch, isProfile]);
 
   return (
     <>

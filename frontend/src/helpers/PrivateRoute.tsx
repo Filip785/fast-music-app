@@ -13,7 +13,8 @@ interface LoggedInObject {
 interface Props {
   component: React.ComponentType<any>;
   loggedIn: LoggedInObject;
-  additionalProps: AdditionalPropType;
+  additionalProps?: AdditionalPropType;
+  path: string[] | string;
 }
 
 const PrivateRoute: React.FC<Props> = ({ component: Component, ...rest }) => (

@@ -20,30 +20,35 @@ import {
 } from '@material-ui/core';
 import { doLogout } from './state/auth/auth.action';
 import Profile from './components/User/Profile';
+import { AuthState, AuthActionTypes } from './state/auth/auth.types';
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
+interface Props {
+  isLoading: boolean;
+  auth: AuthState;
+  doLogout: () => AuthActionTypes;
+}
+
+interface State {
+
+}
+
+const styles = {
   container: {
     display: 'flex',
     justifyContent: 'space-between'
   }
-});
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: any) => ({
   auth: state.authReducer,
   isLoading: state.loadReducer.isLoading
 });
 
-class ConnectedApp extends React.Component {
-  constructor(props) {
+class ConnectedApp extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
-    this.doLogoutEv = this.doLogout.bind(this);
+    this.doLogout = this.doLogout.bind(this);
   }
 
   doLogout() {
@@ -53,16 +58,16 @@ class ConnectedApp extends React.Component {
   }
 
   render() {
-    const { classes, isLoading } = this.props;
+    const { isLoading } = this.props;
     const { user: { loggedIn, authUser } } = this.props.auth;
     
     return (
       <Router history={history}>
           <div className="App">
             <AppBar>
-              <Toolbar className={classes.container} style={!loggedIn.status ? {justifyContent: 'flex-end'} : {}}>
-                {loggedIn.status && <Typography variant="h6" className={classes.title} component={Link} to="/dashboard" color="inherit" style={{ textDecoration: 'none' }}>
-                  Welcome, {authUser.name}
+              <Toolbar style={!loggedIn.status ? {justifyContent: 'flex-end', display:'flex'} : {display:'flex', justifyContent: 'space-between'}}>
+                {loggedIn.status && <Typography variant="h6" component={Link} to="/dashboard" color="inherit" style={{ textDecoration: 'none' }}>
+                  Welcome, {authUser!.name}
                 </Typography>}
                 <div className="links">
                   {!loggedIn.status && <Button color="inherit" component={Link} to="/login">Login</Button>}
@@ -77,7 +82,7 @@ class ConnectedApp extends React.Component {
                   >
                     Add new item
                   </Button>}
-                  {loggedIn.status && <Button color="inherit" onClick={this.doLogoutEv}>Logout</Button>}
+                  {loggedIn.status && <Button color="inherit" onClick={this.doLogout}>Logout</Button>}
                 </div>
               </Toolbar>
             </AppBar>

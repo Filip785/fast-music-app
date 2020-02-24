@@ -10,24 +10,35 @@ import {
 import SortByArtist from './SortByArtist/SortByArtist';
 import AllSongsList from './AllSongsList/AllSongsList';
 import { toggleLoadSpinner } from '../../state/load/load.actions';
+import { History } from 'history';
+import history from '../../helpers/history';
 
-class ConnectedDashboard extends React.Component {
-  constructor(props) {
+interface Props {
+  location: History<History.PoorMansUnknown>;
+  toggleLoadSpinner: () => void;
+}
+
+interface State {
+  value: number;
+}
+
+class ConnectedDashboard extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
       value: 0,
     };
 
-    this.handleChangeEv = this.handleChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(_, newValue) {
-    if(newValue === 1) {
+  handleChange(event: React.ChangeEvent<{}>, value: number) {
+    if(value === 1) {
       this.props.toggleLoadSpinner();
     }
     
-    this.setState({ value: newValue });
+    this.setState({ value });
   }
 
   render() {
@@ -36,13 +47,13 @@ class ConnectedDashboard extends React.Component {
     return (
       <Container>
         <AppBar position="static">
-          <Tabs value={value} onChange={this.handleChangeEv} aria-label="simple tabs">
+          <Tabs value={value} onChange={this.handleChange} aria-label="simple tabs">
             <Tab label="ALL SONGS" id="simple-tab-0" />
             <Tab label="SORT BY ARTIST NAME" id="simple-tab-1" />
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <AllSongsList location={this.props.location} />
+          <AllSongsList history={history} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <SortByArtist />

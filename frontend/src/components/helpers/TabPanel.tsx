@@ -4,7 +4,7 @@ import { Typography, Box } from '@material-ui/core';
 interface Props {
   value: number;
   index: number;
-  children: React.ReactChildren;
+  children: React.ReactNode;
 }
 
 export default function TabPanel(props: Props) {

@@ -10,6 +10,8 @@ interface LoggedInObject {
 interface Props {
   component: React.ComponentType<any>;
   loggedIn: LoggedInObject;
+  path: string[] | string;
+  exact?: boolean;
 }
 
 const PublicRoute: React.FC<Props> = ({ component: Component, ...rest }) => {

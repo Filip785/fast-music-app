@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import AllSongsList from '../Dashboard/AllSongsList/AllSongsList';
 import { toggleLoadSpinner } from '../../state/load/load.actions';
 import { Profile } from '../../state/audio/audio.types';
+import history from '../../helpers/history';
 
 interface Props {
   profile: Profile;
@@ -33,7 +34,7 @@ class ConnectedProfile extends React.Component<Props, State> {
             <h4>Number of uploads: {profile.numberOfUploads}</h4>  
           </div>
 
-          <AllSongsList isProfile={true} profileId={id} location={{}} />
+          <AllSongsList isProfile={true} profileId={id} history={history} />
         </div>
       </>
     );

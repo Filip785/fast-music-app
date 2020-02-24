@@ -386,8 +386,7 @@ class ConnectedAddEditAudioItem extends React.Component<Props, State> {
         <AddArtistDialog handleToggleDialog={this.handleToggleDialog} 
                          handleChangeArtistName={this.handleChangeArtistName} 
                          artistName={artistName} 
-                         userApiToken={user.api_token} 
-                         // fix this
+                         userApiToken={user.api_token}
                          onBlurAddItemForm={this.handleBlurArtistName} 
         />
         <Snackbar open={Boolean(musicFileErrors.fileExtensionNotAllowed)} autoHideDuration={3500} onClose={this.handleCloseFileNotAllowedPrompt}>
