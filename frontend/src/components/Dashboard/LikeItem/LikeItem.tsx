@@ -25,6 +25,7 @@ const LikeItem: React.FC<CardProps> = (props: CardProps): React.ReactElement => 
         component="span"
         size="large"
         color="primary"
+        className="likeButton"
         style={{ marginTop: '20px', marginBottom: '20px' }}
         onClick={() => {
           dispatch(doLike(props.audioItemId, props.userId, props.userApiToken, Boolean(props.artistId), props.artistId));
@@ -32,7 +33,7 @@ const LikeItem: React.FC<CardProps> = (props: CardProps): React.ReactElement => 
         }}
       >
         {!props.isLikedByUser ? <ThumbUp /> : <ThumbDown />}
-        <span style={{ paddingLeft: '10px' }}>{!props.isLikedByUser ? ('Like this song') : ('Unlike this song')}</span>
+        <span className="like-button-text" style={{ paddingLeft: '10px' }}>{!props.isLikedByUser ? ('Like this song') : ('Unlike this song')}</span>
       </Button>}
       <h3>Likes: {props.numLikes}</h3>
     </>

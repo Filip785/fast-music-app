@@ -10,8 +10,7 @@ import PublicRoute from './helpers/PublicRoute';
 import history from './helpers/history';
 import AddEditAudioItem from './components/AddEditAudioItem/AddEditAudioItem';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { 
-  withStyles, 
+import {
   Typography, 
   Toolbar, 
   AppBar, 
@@ -31,13 +30,6 @@ interface Props {
 interface State {
 
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'space-between'
-  }
-};
 
 const mapStateToProps = (state: any) => ({
   auth: state.authReducer,
@@ -113,4 +105,4 @@ const App = connect(mapStateToProps, {
   doLogout 
 }) (ConnectedApp);
 
-export default withStyles(styles)(App);
+export default App;

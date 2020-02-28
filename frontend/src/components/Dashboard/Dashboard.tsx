@@ -10,11 +10,8 @@ import {
 import SortByArtist from './SortByArtist/SortByArtist';
 import AllSongsList from './AllSongsList/AllSongsList';
 import { toggleLoadSpinner } from '../../state/load/load.actions';
-import { History } from 'history';
-import history from '../../helpers/history';
 
 interface Props {
-  location: History<History.PoorMansUnknown>;
   toggleLoadSpinner: () => void;
 }
 
@@ -53,7 +50,7 @@ class ConnectedDashboard extends React.Component<Props, State> {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <AllSongsList history={history} />
+          <AllSongsList />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <SortByArtist />

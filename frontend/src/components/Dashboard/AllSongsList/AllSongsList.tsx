@@ -13,10 +13,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { AudioState, AudioItem } from '../../../state/audio/audio.types';
 import { User } from '../../../state/auth/auth.types';
-import { History } from 'history';
 
 interface Props {
-  history: History<History.PoorMansUnknown> | { location: { state: {} } };
   profileId?: number;
   isProfile?: boolean;
 }
@@ -83,7 +81,7 @@ export default function AllSongsList(props: Props) {
                       </audio>
                       <div style={{ marginTop: '20px' }}>
                         {(audioItem.uploader.id === user.id) && <EditDelete audioId={audioItem.id} userId={user.id} userApiToken={user.api_token} />}
-                        {!isProfile && <>Uploaded by <Link to={`/profile/${audioItem.uploader.id}`}><strong>{audioItem.uploader.name}</strong></Link></>}
+                        {!isProfile && <span className="uploader">Uploaded by <Link to={`/profile/${audioItem.uploader.id}`}><strong>{audioItem.uploader.name}</strong></Link></span>}
                       </div>
                     </ListItem>
                   </List>

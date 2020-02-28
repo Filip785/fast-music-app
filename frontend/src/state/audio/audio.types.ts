@@ -3,7 +3,7 @@ import { TOGGLE_FILE_CHANGE, FILE_EXTENSION_FORBIDDEN, FILE_EXTENSION_FORBIDDEN_
 import { User } from '../auth/auth.types';
 import { Artist } from '../artist/artist.types';
 
-interface AudioItemUploader {
+export interface AudioItemUploader {
   id: number;
   name: string;
 }
