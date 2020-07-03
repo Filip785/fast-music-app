@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide, SlideProps } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Edit, Delete } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
 import { deleteAudio } from '../../../state/audio/audio.action';
 import { toggleLoadSpinner } from '../../../state/load/load.actions';
-import { TransitionProps } from '@material-ui/core/transitions/transition';
 
-const Transition = React.forwardRef<unknown, TransitionProps>((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+const Transition = React.forwardRef<unknown, SlideProps>((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 interface Props {
   audioId: number;

@@ -21,7 +21,7 @@ export function verifyIsAllowedFileType(): Middleware {
       return api.dispatch({ type: FILE_EXTENSION_FORBIDDEN });
     }
 
-    const selectedFile: File = action.payload.file?.files![0];
+    const selectedFile: File | null | undefined = action.payload.file?.files![0];
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -29,6 +29,6 @@ export function verifyIsAllowedFileType(): Middleware {
       next(action);
     };
 
-    reader.readAsDataURL(selectedFile);
+    reader.readAsDataURL(selectedFile!);
   };
 }
