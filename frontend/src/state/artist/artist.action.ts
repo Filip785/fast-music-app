@@ -12,7 +12,7 @@ type ThunkResult<R = Promise<void>> = ThunkAction<R, ArtistState, unknown, Artis
 export function getArtists(userApiToken: string): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.get('http://localhost/api/artist', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}api/artist`, {
         headers: {
           Authorization: `Bearer ${userApiToken}`
         }
@@ -28,7 +28,7 @@ export function getArtists(userApiToken: string): ThunkResult {
 export function createArtist(artistName: string, userApiToken: string, onBlurAddItemForm: (target: ArtistBlurType) => void): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.post('http://localhost/api/artist/create', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}api/artist/create`, {
         artistName
       }, {
         headers: {

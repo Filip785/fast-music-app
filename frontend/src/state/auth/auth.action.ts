@@ -11,7 +11,7 @@ type ThunkResult<R = Promise<void>> = ThunkAction<R, AuthState, unknown, AuthAct
 export function attemptLogin(email: string, password: string): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.post('http://localhost/api/user/login', { email, password });
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}api/user/login`, { email, password });
 
       dispatch({ type: ATTEMPT_LOGIN, payload: response.data });
       localStorage.setItem('authUser', JSON.stringify(response.data));
@@ -31,7 +31,7 @@ export function attemptLoginFailureEnd(): AuthActionTypes {
 export function attemptRegister(name: string, username: string, email: string, password: string): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      await axios.post('http://localhost/api/user/create', { name, username, email, password });
+      await axios.post(`${process.env.REACT_APP_API_URL}api/user/create`, { name, username, email, password });
 
       dispatch({ type: REGISTER_SUCCESS });
       history.push('/login');

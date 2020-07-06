@@ -42,7 +42,7 @@ export function closeFileNotAllowedPrompt(): AudioFileActionTypes {
 export function getAllAudioItems(userId: number, userApiToken: string): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.get('http://localhost/api/audio', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}api/audio`, {
         headers: {
           Authorization: `Bearer ${userApiToken}`
         },
@@ -62,7 +62,7 @@ export function getAllAudioItems(userId: number, userApiToken: string): ThunkRes
 export function doLike(audioItemId: number, userId: number, userApiToken: string, isArtists: boolean, artistId: number | undefined): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.post(`http://localhost/api/audio/like`, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}api/audio/like`, {
         audioItemId,
         userId
       }, {
@@ -94,7 +94,7 @@ export function toggleItemArtistSongs(value: number): AudioActionTypes {
 export function getAudioItemsForArtists(userId: number, userApiToken: string): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.get(`http://localhost/api/audio/artist-audio-items/${userId}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}api/audio/artist-audio-items/${userId}`, {
         headers: {
           Authorization: `Bearer ${userApiToken}`
         }
@@ -111,7 +111,7 @@ export function getAudioItemsForArtists(userId: number, userApiToken: string): T
 export function getProfileData(profileId: number, authUserId: number, authUserApiToken: string): ThunkResult  {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.get(`http://localhost/api/user/profile/${profileId}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}api/user/profile/${profileId}`, {
         headers: {
           Authorization: `Bearer ${authUserApiToken}`
         },
@@ -131,7 +131,7 @@ export function getProfileData(profileId: number, authUserId: number, authUserAp
 export function deleteAudio(audioId: number, userId: number, userApiToken: string, isArtists?: boolean, artistId?: number): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      await axios.delete(`http://localhost/api/audio/delete/${audioId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}api/audio/delete/${audioId}`, {
         headers: {
           Authorization: `Bearer ${userApiToken}`
         },
@@ -165,7 +165,7 @@ export function deleteAudio(audioId: number, userId: number, userApiToken: strin
 export function getSpecificUsers(exceptUserId: number, userApiToken: string): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.get(`http://localhost/api/user/specific/${exceptUserId}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}api/user/specific/${exceptUserId}`, {
         headers: {
           Authorization: `Bearer ${userApiToken}`
         }
@@ -187,7 +187,7 @@ export function cleanupAddFilePage(): AudioActionTypes {
 export function getAudioItem(authUserId: number, audioItemId: number, userApiToken: string): ThunkResult {
   return async (dispatch: Dispatch) => {
     try {
-      const response = await axios.get(`http://localhost/api/audio/details/${audioItemId}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}api/audio/details/${audioItemId}`, {
         headers: {
           Authorization: `Bearer ${userApiToken}`
         },
@@ -223,7 +223,7 @@ export function addOrEditAudioItem(requestData: { action: string, method: string
 
       const allowedIds = allowedUsers.map(user => user.id);
 
-      const response = await methodType(`http://localhost/api/audio${requestData.action}`, {
+      const response = await methodType(`${process.env.REACT_APP_API_URL}api/audio${requestData.action}`, {
         songTitle,
         artistId,
         fileName,
